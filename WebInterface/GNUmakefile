@@ -3,8 +3,8 @@
 #
 
 # specific names for this package
-DICT  = DBInterfaceCint
-SHLIB = libDBInterface.so
+DICT  = WebInterfaceDict
+SHLIB = libWebInterface.so
 
 SOURCES = $(filter-out $(DICT).cxx, $(wildcard *.cxx))
 FMWK_HEADERS = LinkDef.h $(DICT).h
