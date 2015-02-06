@@ -1,14 +1,14 @@
 /**
- * \file WebData.h
+ * \file Snapshot.h
  *
- * \ingroup WebDBI
+ * \ingroup Snapshot
  * 
- * \brief Class def header for a class WebData
+ * \brief Class def header for a class Snapshot
  *
  * @author kterao
  */
 
-/** \addtogroup WebDBI
+/** \addtogroup Snapshot
 
     @{*/
 #ifndef WEBDB_WEBDATA_H
@@ -17,8 +17,10 @@
 #include <iostream>
 #include <vector>
 #include <TTimeStamp.h>
+#include "ChData.h"
+#include "IOVDataError.h"
+namespace lariov {
 
-namespace webdb {
   enum ValueType_t {
     kSTRING,
     kBOOL,
@@ -34,40 +36,45 @@ namespace webdb {
     kUNKNOWN
   };
 
-  typedef std::vector<std::string> Row_t;
-  typedef std::vector<Row_t> Table_t;
-
-  class WebReader;
   /**
-     \class WebData
-     User defined class WebData ... these comments are used to generate
-     doxygen documentation!
+     \class Snapshot
   */
-  class WebData{
-    friend class WebReader;
+  template <class T>
+  class Snapshot{
+
   public:
     
     /// Default constructor
-    WebData(std::string name="noname" );
+    Snapshot(std::string name="noname" );
 
     /// Default destructor
-    ~WebData(){}
+    ~Snapshot(){}
 
     const std::string& Name() const;
     const TTimeStamp&  Start() const;
     const TTimeStamp&  End()   const;
 
     bool   Valid(const TTimeStamp& ts) const;
-    size_t NRows()    const;
-    size_t NColumns() const;
+    size_t NChannels()    const;
+    size_t NFields() const;
 
     const std::string& FieldName(const size_t& column) const;
     ValueType_t        FieldType(const size_t& column) const;
-    const std::vector<webdb::ValueType_t>& FieldType() const;
+    const std::vector<lariov::ValueType_t>& FieldType() const;
     const std::vector<std::string>& FieldName() const;
-    const Row_t& Row(const size_t n) const;
-    const std::string& Field(const size_t& row, 
-			     const size_t& column) const;
+    const lariov::ChData<T>& ChData(const size_t n) const
+    {
+      if(n >= _table.size())
+	throw IOVDataError("Invalid row number requested!");
+      return _table[n];
+    }
+    const T& Value(const size_t& ch, 
+		   const size_t& i) const
+    {
+      if(column >= _field_type.size())
+	throw IOVDataError("Invalid column number requested!");
+      return Row(row)[column];
+    }
   private:
 
     void Reset (const TTimeStamp& iov_start,
@@ -76,16 +83,22 @@ namespace webdb {
 		const std::vector<std::string>& field_type);
 
     void Reserve (size_t n);
-    void Append  (const Row_t& row);
+    void Append  (const lariov::ChData<T>& row)
+    {
+      if(row.size() != _field_type.size())
+	throw IOVDataError("Invalid number of columns in the new row!");
+      _table.push_back(row);
+    }
+
 
   private:
 
     std::string _name;
     TTimeStamp  _iov_start;
     TTimeStamp  _iov_end;
-    Table_t     _table;
+    std::vector< ::lariov::ChData<T> > _table;
     std::vector<std::string> _field_name;
-    std::vector<webdb::ValueType_t> _field_type;
+    std::vector<lariov::ValueType_t> _field_type;
 
   };
 }

@@ -1,14 +1,14 @@
 /**
  * \file WebReader.h
  *
- * \ingroup WebInterface
+ * \ingroup WebDBI
  * 
  * \brief Class def header for a class WebReader
  *
  * @author kterao
  */
 
-/** \addtogroup WebInterface
+/** \addtogroup WebDBI
 
     @{*/
 #ifndef WEBDB_WEBREADER_H
