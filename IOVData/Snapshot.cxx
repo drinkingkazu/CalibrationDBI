@@ -56,6 +56,17 @@ namespace lariov {
   { _table.reserve(n); }
 
   template <class T>
+  size_t Snapshot<T>::Name2Index(const std::string& field_name) const
+  {
+    auto const& iter = _field_name_to_index.find(field_name);
+    if(iter == _field_name_to_index.end()) {
+      std::string msg("Field not found" + field_name);
+      throw IOVDataError(msg.c_str());
+    }
+    return (*iter).second;
+  }
+
+  template <class T>
   void Snapshot<T>::Reset (const TTimeStamp& iov_start,
 			   const TTimeStamp& iov_end,
 			   const std::vector<std::string>& field_name,
@@ -69,7 +80,15 @@ namespace lariov {
       throw IOVDataError("Name & Type column array has mis-match in length!");
     _field_name = field_name;
 
+    size_t ctr=0;
+    for(size_t i=0; i<_field_name.size(); ++i) {
+      if(_field_name[i] == "channel") continue;
+      _field_name_to_index[_field_name[i]] = ctr;
+      ctr++;
+    }
+
     _field_type.resize(field_type.size());
+    
     for(size_t i=0; i<field_type.size(); ++i) {
 
       auto const& ft = field_type[i];
@@ -82,7 +101,7 @@ namespace lariov {
       else if( ft == "text"                            ) vt = kSTRING;
       else {
 	std::string msg("Unknown data type: ");
-	msg += ft;
+	msg += "\"" + ft + "\"";
 	throw IOVDataError(msg.c_str());
       }
       _field_type[i] = vt;

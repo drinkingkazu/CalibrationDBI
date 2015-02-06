@@ -15,12 +15,16 @@
 #define WEBDB_WEBDATA_H
 
 #include <iostream>
+#include <map>
 #include <vector>
 #include <TTimeStamp.h>
 #include "ChData.h"
 #include "IOVDataError.h"
 
 namespace lariov {
+
+  template <class T>
+  class IOVReader;
 
   enum ValueType_t {
     kSTRING,
@@ -42,12 +46,12 @@ namespace lariov {
   */
   template <class T>
   class Snapshot{
-
+    friend class IOVReader<T>;
   public:
     
     /// Default constructor
     Snapshot(std::string name="noname" );
-
+    
     /// Default destructor
     ~Snapshot(){}
 
@@ -63,19 +67,14 @@ namespace lariov {
     ValueType_t        FieldType(const size_t column) const;
     const std::vector<lariov::ValueType_t>& FieldType() const;
     const std::vector<std::string>& FieldName() const;
-    const lariov::ChData<T>& ChData(const size_t n) const
+    const lariov::ChData<T>& Data(const size_t n) const
     {
       if(n >= _table.size())
 	throw IOVDataError("Invalid row number requested!");
       return _table[n];
     }
-    const T& Value(const size_t ch, 
-		   const size_t field) const
-    {
-      if(field >= _field_type.size())
-	throw IOVDataError("Invalid field number requested!");
-      return ChData(ch)[field];
-    }
+    size_t Name2Index(const std::string& field_name) const;
+
   private:
 
     void Reset (const TTimeStamp& iov_start,
@@ -86,11 +85,11 @@ namespace lariov {
     void Reserve (size_t n);
     void Append  (const lariov::ChData<T>& row)
     {
-      if(row.size() != _field_type.size())
+      if(!(_field_type.size())) throw IOVDataError("Not configured yet to call Snapshot::Append()!");
+      if(row.size() != (_field_type.size()-1))
 	throw IOVDataError("Invalid number of columns in the new row!");
       _table.push_back(row);
     }
-
 
   private:
 
@@ -100,8 +99,10 @@ namespace lariov {
     std::vector< ::lariov::ChData<T> > _table;
     std::vector<std::string> _field_name;
     std::vector<lariov::ValueType_t> _field_type;
-
+    std::map<std::string,size_t> _field_name_to_index;
   };
+
+  template class Snapshot<std::string>;
 }
 
 #endif

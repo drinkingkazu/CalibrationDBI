@@ -15,6 +15,8 @@
 #define IOVDATA_CHDATA_H
 
 #include <vector>
+#include <string>
+
 namespace lariov {
   /**
      \class ChData
@@ -47,6 +49,8 @@ namespace lariov {
     
   };
 }
+
+template class lariov::ChData<std::string>;
 #endif
 /** @} */ // end of doxygen group 
 
