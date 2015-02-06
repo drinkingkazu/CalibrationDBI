@@ -61,13 +61,13 @@ namespace webdb {
     size_t NRows()    const;
     size_t NColumns() const;
 
-    const std::string& FieldName(const size_t& column) const;
-    ValueType_t        FieldType(const size_t& column) const;
+    const std::string& FieldName(const size_t column) const;
+    ValueType_t        FieldType(const size_t column) const;
     const std::vector<webdb::ValueType_t>& FieldType() const;
     const std::vector<std::string>& FieldName() const;
     const Row_t& Row(const size_t n) const;
-    const std::string& Field(const size_t& row, 
-			     const size_t& column) const;
+    const std::string& Field(const size_t row, 
+			     const size_t column) const;
   private:
 
     void Reset (const TTimeStamp& iov_start,

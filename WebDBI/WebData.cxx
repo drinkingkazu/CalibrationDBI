@@ -18,14 +18,14 @@ namespace webdb {
   size_t WebData::NRows()    const { return _table.size();      }
   size_t WebData::NColumns() const { return _field_name.size(); }
 
-  const std::string& WebData::FieldName(const size_t& column) const
+  const std::string& WebData::FieldName(const size_t column) const
   {
     if(column >= _field_name.size()) 
       throw WebDataError("Invalid column number requested!");
     return _field_name[column];
   }
 
-  ValueType_t WebData::FieldType(const size_t& column) const
+  ValueType_t WebData::FieldType(const size_t column) const
   {
     if(column >= _field_type.size())
       throw WebDataError("Invalid column number requested!");
@@ -42,8 +42,8 @@ namespace webdb {
     return _table[n];
   }
 
-  const std::string& WebData::Field(const size_t& row, 
-				    const size_t& column) const
+  const std::string& WebData::Field(const size_t row, 
+				    const size_t column) const
   {
     if(column >= _field_type.size())
       throw WebDataError("Invalid column number requested!");
