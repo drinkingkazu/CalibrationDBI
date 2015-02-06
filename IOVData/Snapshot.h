@@ -19,6 +19,7 @@
 #include <TTimeStamp.h>
 #include "ChData.h"
 #include "IOVDataError.h"
+
 namespace lariov {
 
   enum ValueType_t {
@@ -58,8 +59,8 @@ namespace lariov {
     size_t NChannels()    const;
     size_t NFields() const;
 
-    const std::string& FieldName(const size_t& column) const;
-    ValueType_t        FieldType(const size_t& column) const;
+    const std::string& FieldName(const size_t column) const;
+    ValueType_t        FieldType(const size_t column) const;
     const std::vector<lariov::ValueType_t>& FieldType() const;
     const std::vector<std::string>& FieldName() const;
     const lariov::ChData<T>& ChData(const size_t n) const
@@ -68,12 +69,12 @@ namespace lariov {
 	throw IOVDataError("Invalid row number requested!");
       return _table[n];
     }
-    const T& Value(const size_t& ch, 
-		   const size_t& i) const
+    const T& Value(const size_t ch, 
+		   const size_t field) const
     {
-      if(column >= _field_type.size())
-	throw IOVDataError("Invalid column number requested!");
-      return Row(row)[column];
+      if(field >= _field_type.size())
+	throw IOVDataError("Invalid field number requested!");
+      return ChData(ch)[field];
     }
   private:
 

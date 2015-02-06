@@ -39,6 +39,12 @@ def list_ch(arg):
     t = TTimeStamp(t.year, t.month, t.day, t.hour, t.minute, t.second);
 
     data = web_reader.Request(arg[0],t)
+
+    for ch in xrange(data.NRows()):
+        for col in xrange(data.NColumns()):
+            print data.Field(ch,col),
+        print
+    print data.NRows()
     
 if __name__ == '__main__':
 

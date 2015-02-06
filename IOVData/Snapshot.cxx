@@ -4,44 +4,62 @@
 #include "Snapshot.h"
 #include "IOVDataError.h"
 namespace lariov {
-  
-  Snapshot::Snapshot(std::string name) : _name(name)
+
+  template <class T>
+  Snapshot<T>::Snapshot(std::string name)
+  : _name(name)
   {}
 
-  const std::string& Snapshot::Name () const { return _name;      }
-  const TTimeStamp&  Snapshot::Start() const { return _iov_start; }
-  const TTimeStamp&  Snapshot::End()   const { return _iov_end;   }
-  
-  bool  Snapshot::Valid(const TTimeStamp& ts) const 
+  template <class T>
+  const std::string& Snapshot<T>::Name () const { return _name;      }
+
+  template <class T>
+  const TTimeStamp&  Snapshot<T>::Start() const { return _iov_start; }
+
+  template <class T>
+  const TTimeStamp&  Snapshot<T>::End()   const { return _iov_end;   }
+
+  template <class T>
+  bool  Snapshot<T>::Valid(const TTimeStamp& ts) const 
   { return (_iov_start < ts && ts < _iov_end); }
 
-  size_t Snapshot::NChannels() const { return _table.size();      }
-  size_t Snapshot::NFields()   const { return _field_name.size(); }
+  template <class T>
+  size_t Snapshot<T>::NChannels() const { return _table.size();      }
 
-  const std::string& Snapshot::FieldName(const size_t& column) const
+  template <class T>
+  size_t Snapshot<T>::NFields()   const { return _field_name.size(); }
+
+  template <class T>
+  const std::string& Snapshot<T>::FieldName(const size_t column) const
   {
     if(column >= _field_name.size()) 
       throw IOVDataError("Invalid column number requested!");
     return _field_name[column];
   }
 
-  ValueType_t Snapshot::FieldType(const size_t& column) const
+  template <class T>
+  ValueType_t Snapshot<T>::FieldType(const size_t column) const
   {
     if(column >= _field_type.size())
       throw IOVDataError("Invalid column number requested!");
     return _field_type[column];
   }
 
-  const std::vector<ValueType_t>& Snapshot::FieldType() const { return _field_type; }
-  const std::vector<std::string>& Snapshot::FieldName() const { return _field_name; }
+  template <class T>
+  const std::vector<ValueType_t>& Snapshot<T>::FieldType() const { return _field_type; }
 
-  void Snapshot::Reserve(size_t n)
+  template <class T>
+  const std::vector<std::string>& Snapshot<T>::FieldName() const { return _field_name; }
+
+  template <class T>
+  void Snapshot<T>::Reserve(size_t n)
   { _table.reserve(n); }
 
-  void Snapshot::Reset (const TTimeStamp& iov_start,
-		       const TTimeStamp& iov_end,
-		       const std::vector<std::string>& field_name,
-		       const std::vector<std::string>& field_type)
+  template <class T>
+  void Snapshot<T>::Reset (const TTimeStamp& iov_start,
+			   const TTimeStamp& iov_end,
+			   const std::vector<std::string>& field_name,
+			   const std::vector<std::string>& field_type)
   {
     if(iov_start >= iov_end)
       throw IOVDataError("IOV start cannot be larger than the end!");
