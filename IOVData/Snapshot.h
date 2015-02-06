@@ -67,12 +67,6 @@ namespace lariov {
     ValueType_t        FieldType(const size_t column) const;
     const std::vector<lariov::ValueType_t>& FieldType() const;
     const std::vector<std::string>& FieldName() const;
-    const lariov::ChData<T>& Data(const size_t n) const
-    {
-      if(n >= _table.size())
-	throw IOVDataError("Invalid row number requested!");
-      return _table[n];
-    }
     size_t Name2Index(const std::string& field_name) const;
 
   private:
@@ -83,6 +77,20 @@ namespace lariov {
 		const std::vector<std::string>& field_type);
 
     void Reserve (size_t n);
+
+
+    //
+    // Template functions
+    //
+  public:
+    const lariov::ChData<T>& Data(const size_t n) const
+    {
+      if(n >= _table.size())
+	throw IOVDataError("Invalid row number requested!");
+      return _table[n];
+    }
+
+  private:
     void Append  (const lariov::ChData<T>& row)
     {
       if(!(_field_type.size())) throw IOVDataError("Not configured yet to call Snapshot::Append()!");
