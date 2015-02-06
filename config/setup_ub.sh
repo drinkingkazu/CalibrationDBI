@@ -1,6 +1,0 @@
-#!/bin/bash
-source /grid/fermiapp/products/uboone/setup_uboone.sh
-setup root v5_34_23 -q e6:prof
-setup libwda v2_20_1
-setup psycopg2 v2_5_4
-

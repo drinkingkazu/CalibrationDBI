@@ -16,5 +16,5 @@ rootlibmap() {
 
 ######################################################
 # Base
-rootlibmap libWebInterface.rootmap libWebInterface.so $CALIBDB_DIR/WebInterface/LinkDef.h \
+rootlibmap libWebDBI.rootmap libWebDBI.so $CALIBDB_DIR/WebDBI/LinkDef.h \
     libwda.so

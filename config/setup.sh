@@ -27,7 +27,19 @@ fi
 echo "CALIBDB_DIR = $CALIBDB_DIR"
 if [[ -z $CALIBDB_DIR ]]; then
     echo \$CALIBDB_DIR not set! 
-    echo You have to set this first.
+    return;
+fi
+
+if [[ -z $LIBWDA_SERVER ]]; then
+    echo \$LIBWDA_SERVER not set!
+    return;
+fi
+if [[ -z $LIBWDA_PORT ]]; then
+    echo \$LIBWDA_PORT not set!
+    return;
+fi
+if [[ -z $LIBWDA_DBNAME ]]; then
+    echo \$LIBWDA_DBNAME not set!
     return;
 fi
 
@@ -108,6 +120,7 @@ else
 	export DYLD_LIBRARY_PATH=$CALIBDB_LIBDIR:$DYLD_LIBRARY_PATH
     fi
     export PATH=$CALIBDB_DIR/bin:$PATH
+    export PYTHONPATH=$CALIBDB_DIR/python:$PYTHONPATH
     alias cdbmake="make --directory=$CALIBDB_DIR"
     alias cdbgen_class="python $CALIBDB_DIR/bin/gen_class_empty"
     alias cdbtop="cd $CALIBDB_DIR"
