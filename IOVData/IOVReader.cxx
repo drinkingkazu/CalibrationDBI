@@ -4,6 +4,7 @@
 #include "IOVReader.h"
 #include "UtilFunc.h"
 #include "IOVDataError.h"
+#include <TStopwatch.h>
 #include <limits>
 #include <sstream>
 namespace lariov {
@@ -29,15 +30,19 @@ namespace lariov {
       iter = (_data_m.emplace(std::make_pair(name,Snapshot<T>(name)))).first;
     }
     if((*iter).second.Valid(ts)) return (*iter).second;
-    
+
+    (*iter).second.clear();
+
     std::string url("http://");
     url += _server;
     if(!_port.empty()) url += ":" + _port;
     url += "/" + _dbname + "/app";
     url += "/data?f=" + (*iter).second.Name();
     url += "&t=" + std::to_string(ts.GetSec()) + "." + std::to_string(int(ts.GetNanoSec()/1.e9));
-
+    
     int err_code=0;
+    TStopwatch fWatch;
+    fWatch.Start();
     auto data = getDataWithTimeout(url.c_str(),NULL,_timeout,&err_code);
     if(err_code) {
       std::cerr << "\033[93m" 
@@ -50,6 +55,23 @@ namespace lariov {
       throw IOVDataError("Failed to fetch Snapshot!");
     }
 
+    size_t nrows = getNtuples(data);
+
+    if(nrows < 4) {
+      releaseDataset(data);
+      std::ostringstream msg;
+      if(nrows)
+	msg << "Not enough information loaded (#rows = " << nrows << " < 4)";
+      else
+	msg << "No data ... likely connection timed-out (" 
+	    << fWatch.RealTime()
+	    << " / "
+	    << _timeout
+	    << " [s])";
+      throw IOVDataError(msg.str());
+    }
+    (*iter).second.reserve(getNtuples(data)-4);
+
     TTimeStamp start, end;
     ChData<T> values;
     std::string str_value;
@@ -58,7 +80,7 @@ namespace lariov {
     std::vector<std::string> field_type;
     char indefinite[30]="-";
     char buf[30];
-    for(size_t row=0; row<(size_t)(getNtuples(data)); ++row) {
+    for(size_t row=0; row<nrows; ++row) {
       auto tup = getTuple(data,row);
       str_array.resize(getNfields(tup),"");
 

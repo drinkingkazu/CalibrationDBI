@@ -11,6 +11,18 @@ namespace lariov {
   {}
 
   template <class T>
+  void Snapshot<T>::clear()
+  { 
+    std::vector<lariov::ChData<T> >::clear();
+    _name="";
+    _iov_start.SetSec(0);
+    _iov_end.SetSec(0);
+    _field_name.clear();
+    _field_type.clear();
+    _field_name_to_index.clear();
+  }
+
+  template <class T>
   const std::string& Snapshot<T>::Name () const { return _name;      }
 
   template <class T>
@@ -24,7 +36,7 @@ namespace lariov {
   { return (_iov_start < ts && ts < _iov_end); }
 
   template <class T>
-  size_t Snapshot<T>::NChannels() const { return _table.size();      }
+  size_t Snapshot<T>::NChannels() const { return this->size();      }
 
   template <class T>
   size_t Snapshot<T>::NFields()   const { return _field_name.size(); }
@@ -52,10 +64,6 @@ namespace lariov {
   const std::vector<std::string>& Snapshot<T>::FieldName() const { return _field_name; }
 
   template <class T>
-  void Snapshot<T>::Reserve(size_t n)
-  { _table.reserve(n); }
-
-  template <class T>
   size_t Snapshot<T>::Name2Index(const std::string& field_name) const
   {
     auto const& iter = _field_name_to_index.find(field_name);
@@ -74,6 +82,7 @@ namespace lariov {
   {
     if(iov_start >= iov_end)
       throw IOVDataError("IOV start cannot be larger than the end!");
+    this->clear();
     _iov_start = iov_start;
     _iov_end   = iov_end;
     if(field_name.size()!=field_type.size())

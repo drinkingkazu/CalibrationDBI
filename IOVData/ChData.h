@@ -50,6 +50,16 @@ namespace lariov {
   };
 }
 
+namespace std {
+  template <class T>
+  class less<lariov::ChData<T>*>
+  {
+  public:
+    bool operator()( const lariov::ChData<T>* lhs, const lariov::ChData<T>* rhs )
+    { return (*lhs) < (*rhs); }
+  };
+}
+
 template class lariov::ChData<std::string>;
 #endif
 /** @} */ // end of doxygen group 

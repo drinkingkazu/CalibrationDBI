@@ -15,6 +15,7 @@
 #define WEBDB_WEBDATA_H
 
 #include <iostream>
+#include <algorithm>
 #include <map>
 #include <vector>
 #include <TTimeStamp.h>
@@ -28,13 +29,9 @@ namespace lariov {
 
   enum ValueType_t {
     kSTRING,
-    kBOOL,
-    kINT,
-    kUINT,
     kSHORT,
-    kUSHORT,
+    kINT,
     kLONG,
-    kULONG,
     kFLOAT,
     kDOUBLE,
     kTIMESTAMP,
@@ -45,7 +42,7 @@ namespace lariov {
      \class Snapshot
   */
   template <class T>
-  class Snapshot{
+  class Snapshot : public std::vector< lariov::ChData<T> > {
     friend class IOVReader<T>;
   public:
     
@@ -54,6 +51,8 @@ namespace lariov {
     
     /// Default destructor
     ~Snapshot(){}
+
+    void clear();
 
     const std::string& Name() const;
     const TTimeStamp&  Start() const;
@@ -76,18 +75,26 @@ namespace lariov {
 		const std::vector<std::string>& field_name,
 		const std::vector<std::string>& field_type);
 
-    void Reserve (size_t n);
-
-
     //
     // Template functions
     //
   public:
     const lariov::ChData<T>& Data(const size_t n) const
     {
-      if(n >= _table.size())
+      if(n >= this->size())
 	throw IOVDataError("Invalid row number requested!");
-      return _table[n];
+      return (*this)[n];
+    }
+
+    inline void push_back(const lariov::ChData<T>& data)
+    {
+
+      bool sort = (this->size() && data < this->back());
+
+      std::vector<lariov::ChData<T> >::push_back(data);
+
+      if(sort) std::sort(this->begin(),this->end());
+
     }
 
   private:
@@ -96,7 +103,7 @@ namespace lariov {
       if(!(_field_type.size())) throw IOVDataError("Not configured yet to call Snapshot::Append()!");
       if(row.size() != (_field_type.size()-1))
 	throw IOVDataError("Invalid number of columns in the new row!");
-      _table.push_back(row);
+      this->push_back(row);
     }
 
   private:
@@ -104,7 +111,6 @@ namespace lariov {
     std::string _name;
     TTimeStamp  _iov_start;
     TTimeStamp  _iov_end;
-    std::vector< ::lariov::ChData<T> > _table;
     std::vector<std::string> _field_name;
     std::vector<lariov::ValueType_t> _field_type;
     std::map<std::string,size_t> _field_name_to_index;
