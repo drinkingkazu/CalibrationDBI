@@ -3,7 +3,6 @@ db=lariov.IOVReader("string")("dbdata0.fnal.gov",
                               "8086",
                               "uboonecon_dev",
                               10)
-
 ts=TTimeStamp()
 ts.SetSec(12347578)
 data = db.Request("pedestals",ts);

@@ -31,8 +31,6 @@ namespace lariov {
     }
     if((*iter).second.Valid(ts)) return (*iter).second;
 
-    (*iter).second.clear();
-
     std::string url("http://");
     url += _server;
     if(!_port.empty()) url += ":" + _port;
@@ -153,27 +151,6 @@ namespace lariov {
     releaseDataset(data);
     return (*iter).second;
   }
-  
-  template <class T>
-  void IOVReader<T>::Dump() {
-    const char* url = "http://dbdata0.fnal.gov:8086/uboonecon_dev/app/data?f=pedestals&t=12347578.000000";
-    char buf[100];
-    int err_code=0;
-    auto data = getDataWithTimeout(url,
-				   NULL,
-				   10,
-				   &err_code);
-    
-    std::cout << getNtuples(data) << std::endl;
-    for(size_t i=0; i<(size_t)(getNtuples(data)); ++i) {
-      auto tup = getTuple(data,i);
-      for(size_t j=0; j<(size_t)(getNfields(tup)); ++j) {
-	getStringValue(tup,j,buf,sizeof(buf),&err_code);
-	std::cout<<"Row " << i << " Column "<<j<<" ... "<<buf<<std::endl;
-      }
-    }
-  }
-
 }
 
 #endif

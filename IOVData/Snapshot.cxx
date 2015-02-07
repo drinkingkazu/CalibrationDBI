@@ -14,7 +14,6 @@ namespace lariov {
   void Snapshot<T>::clear()
   { 
     std::vector<lariov::ChData<T> >::clear();
-    _name="";
     _iov_start.SetSec(0);
     _iov_end.SetSec(0);
     _field_name.clear();

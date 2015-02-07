@@ -41,14 +41,14 @@ namespace lariov {
     const Snapshot<T>& Request(const std::string& name,
 			       const TTimeStamp&  ts);
     
-    void Dump();
-
   private:
+
     std::string  _server;  ///< HTML server dns
     std::string  _port;    ///< Port ID
     std::string  _dbname;  ///< HTML server db name
     unsigned int _timeout; ///< Query timeout period [s]
     std::map<std::string, ::lariov::Snapshot<T> > _data_m;
+
   };
 }
 
