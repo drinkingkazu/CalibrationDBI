@@ -25,7 +25,7 @@
 namespace lariov {
 
   template <class T>
-  class IOVReader;
+  class WebReader;
 
   enum ValueType_t {
     kSTRING,
@@ -43,7 +43,7 @@ namespace lariov {
   */
   template <class T>
   class Snapshot : public std::vector< lariov::ChData<T> > {
-    friend class IOVReader<T>;
+    friend class WebReader<T>;
   public:
     
     /// Default constructor

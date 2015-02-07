@@ -15,8 +15,6 @@
 #pragma link C++ class lariov::ChData<string>+;
 #pragma link C++ class std::vector< lariov::ChData<string> >+;
 #pragma link C++ class lariov::Snapshot<string>+;
-#pragma link C++ class lariov::IOVReader<string>+;
-//#pragma link C++ function lariov::Snapshot<string>::NChannels()+;
 //ADD_NEW_CLASS ... do not change this line
 #endif
 

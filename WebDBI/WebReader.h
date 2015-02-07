@@ -11,19 +11,19 @@
 /** \addtogroup WebDBI
 
     @{*/
-#ifndef WEBDB_WEBREADER_H
-#define WEBDB_WEBREADER_H
+#ifndef WEBDBI_WEBREADER_H
+#define WEBDBI_WEBREADER_H
 
-#include "WebData.h"
-#include "wda.h"
+#include "IOVData/Snapshot.h"
 #include <map>
-namespace webdb {
+namespace lariov {
 
   /**
      \class WebReader
      User defined class WebReader ... these comments are used to generate
      doxygen documentation!
   */
+  template <class T>
   class WebReader{
     
   public:
@@ -37,20 +37,21 @@ namespace webdb {
     /// Default destructor
     ~WebReader(){}
 
-    const WebData& Request(const std::string& name,
-			   const TTimeStamp&  ts);
-
-    void Dump();
-
+    const Snapshot<T>& Request(const std::string& name,
+			       const TTimeStamp&  ts);
+    
   private:
+
     std::string  _server;  ///< HTML server dns
     std::string  _port;    ///< Port ID
     std::string  _dbname;  ///< HTML server db name
     unsigned int _timeout; ///< Query timeout period [s]
-    std::map<std::string, ::webdb::WebData> _data_m;
+    std::map<std::string, lariov::Snapshot<T> > _data_m;
+
   };
 }
 
+template class lariov::WebReader<std::string>;
 #endif
 /** @} */ // end of doxygen group 
 

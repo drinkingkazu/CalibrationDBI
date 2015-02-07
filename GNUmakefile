@@ -20,7 +20,7 @@ endif
 #
 # Define directories to be compile upon a global "make"...
 #
-SUBDIRS :=  WebDBI
+SUBDIRS :=  IOVData WebDBI
 
 #####################################################################################
 #
