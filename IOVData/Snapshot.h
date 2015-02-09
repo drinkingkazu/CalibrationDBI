@@ -50,11 +50,13 @@ namespace lariov {
     /// Alternative ctor ... for creating Snapshot to be uploaded
     Snapshot(const std::string& folder,
 	     const std::vector<std::string>& field_name,
-	     const std::vector<std::string>& field_type);
+	     const std::vector<std::string>& field_type,
+	     const std::string tag="");
 
     Snapshot(const std::string& name,
 	     const std::vector<std::string>& field_name,
-	     const std::vector< ::lariov::ValueType_t>& field_type);
+	     const std::vector< ::lariov::ValueType_t>& field_type,
+	     const std::string tag="");
 
     void clear();
 
@@ -115,6 +117,7 @@ namespace lariov {
     TTimeStamp  _iov_end;
     std::vector<std::string> _field_name;
     std::vector<lariov::ValueType_t> _field_type;
+    std::string _tag;
     std::map<std::string,size_t> _field_name_to_index;
 
 #ifndef CALIBDB_LOCAL_BUILD

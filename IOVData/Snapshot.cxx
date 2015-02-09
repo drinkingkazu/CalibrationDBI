@@ -15,17 +15,20 @@ namespace lariov {
   template <class T>
   Snapshot<T>::Snapshot(const std::string& folder,
 			const std::vector<std::string>& field_name,
-			const std::vector<std::string>& field_type)
-    : Snapshot(folder,field_name,::lariov::Str2ValueType(field_type))
+			const std::vector<std::string>& field_type,
+			const std::string tag)
+    : Snapshot(folder,field_name,::lariov::Str2ValueType(field_type),tag)
   {}
 
   template <class T>
   Snapshot<T>::Snapshot(const std::string& folder,
 			const std::vector<std::string>& field_name,
-			const std::vector< ::lariov::ValueType_t>& field_type)
+			const std::vector< ::lariov::ValueType_t>& field_type,
+			const std::string tag)
     : _folder(folder)
     , _field_name(field_name)
     , _field_type(field_type)
+    , _tag (tag)
   {
 
     if(field_name.size()!=field_type.size())
