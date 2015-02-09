@@ -18,12 +18,12 @@ namespace lariov {
       return;
     }
 
-    std::string name(t.GetName());
-    if(name != kTREE_NAME) {
-      std::cout<<"\033[93m[WARNING]\033[00m re-naming TTree to \"iov_tree\"..."<<std::endl;
-      name = kTREE_NAME;
+    std::string tree_name(kTREE_PREFIX);
+    tree_name += "_" + _folder;
+    if(t.GetName() != tree_name) {
+      std::cout<<"\033[93m[WARNING]\033[00m re-naming TTree to "<<tree_name<<std::endl;
     }
-    t.SetName(kTREE_NAME.c_str());
+    t.SetName(tree_name.c_str());
 
     if(t.GetBranch(_folder.c_str())) {
       std::cout<<"\033[95m[ERROR]\033[00m folder "
@@ -59,8 +59,9 @@ namespace lariov {
   template <class T>
   void SnapshotCollection<T>::Read(TFile& f)
   {
-
-    auto t = (TTree*)(f.Get(kTREE_NAME.c_str()));
+    std::string tree_name(kTREE_PREFIX);
+    tree_name += "_" + _folder;
+    auto t = (TTree*)(f.Get(tree_name.c_str()));
     if(!t)
       throw IOVDataError("Tree not found...");
 

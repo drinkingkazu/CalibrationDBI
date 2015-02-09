@@ -19,7 +19,7 @@ namespace lariov {
     kUNKNOWN
   };
 
-  const std::string kTREE_NAME = "iov_tree";
+  const std::string kTREE_PREFIX = "iov";
   
   const int kMAX_INT = std::numeric_limits<int>::max();
   const TTimeStamp kMAX_TIME = TTimeStamp(kMAX_INT,kMAX_INT);
