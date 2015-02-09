@@ -23,7 +23,7 @@ OSNAMEMODE      = $(OSNAME)
 include $(CALIBDB_DIR)/Makefile/Makefile.${OSNAME}
 
 # set compiler options for ROOT
-CXXFLAGS +=  `root-config --cflags`
+CXXFLAGS +=  `root-config --cflags` 
 
 # call the common GNUmakefile
 include $(CALIBDB_DIR)/Makefile/GNUmakefile.CORE

@@ -20,8 +20,11 @@ endif
 #
 # Define directories to be compile upon a global "make"...
 #
-SUBDIRS :=  IOVData WebDBI
-
+ifndef USE_LOCAL_LIBWDA
+SUBDIRS := IOVData WebDBI
+else
+SUBDIRS := wda IOVData WebDBI
+endif
 #####################################################################################
 #
 # COMPILATION...

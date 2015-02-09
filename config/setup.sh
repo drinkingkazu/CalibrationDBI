@@ -19,9 +19,13 @@ fi
 unset me;
 
 if [[ -z $LIBWDA_FQ_DIR ]]; then
-    echo \$LIBWDA_FQ_DIR not set!
-    echo You need to set libwda ups product first.
-    return;
+    echo "Using pre-compiled libwda..."
+    export LIBWDA_INC=$CALIBDB_DIR/wda
+    export LIBWDA_LIB=$CALIBDB_DIR/lib
+    export USE_LOCAL_LIBWDA=1
+else
+    echo "LIBWDA_FQ_DIR not set => buliding libwda locally..."
+    export LIBWDA_INC=$LIBWDA_FQ_DIR/include
 fi
 
 echo "CALIBDB_DIR = $CALIBDB_DIR"
@@ -86,16 +90,17 @@ else
 	echo "******************************************************"
 	echo 
     fi
-    if [[ -z $ROOTSYS ]]; then
-	case `uname -n` in
-	    (houston.nevis.columbia.edu)
+fi
+if [[ -z $ROOTSYS ]]; then
+    case `uname -n` in
+	(houston.nevis.columbia.edu)
 	    if [[ -z ${ROOTSYS} ]]; then
 		source /usr/nevis/adm/nevis-init.sh
 		setup root
 		export PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH;
 	    fi
 	    ;;
-	    (*)
+	(*)
 	    echo
 	    echo "****************** PyROOT WARNING ********************"
 	    echo "*                                                    *"
@@ -109,24 +114,24 @@ else
 	    echo "******************************************************"
 	    echo
 	    ;;
-	esac
-    else
-	export PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH;
-    fi
-    
-    export LD_LIBRARY_PATH=$CALIBDB_LIBDIR:$LD_LIBRARY_PATH
-    export PYTHONPATH=$CALIBDB_DIR/python:$PYTHONPATH
-    if [ $CALIBDB_OS = 'Darwin' ]; then
-	export DYLD_LIBRARY_PATH=$CALIBDB_LIBDIR:$DYLD_LIBRARY_PATH
-    fi
-    export PATH=$CALIBDB_DIR/bin:$PATH
-    export PYTHONPATH=$CALIBDB_DIR/python:$PYTHONPATH
-    alias cdbmake="make --directory=$CALIBDB_DIR"
-    alias cdbgen_class="python $CALIBDB_DIR/bin/gen_class_empty"
-    alias cdbtop="cd $CALIBDB_DIR"
-    echo
-    echo "Finish configuration. To build, type:"
-    echo "> cd \$CALIBDB_DIR"
-    echo "> make"
-    echo
+    esac
+else
+    export PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH;
 fi
+    
+export LD_LIBRARY_PATH=$CALIBDB_LIBDIR:$LD_LIBRARY_PATH
+export PYTHONPATH=$CALIBDB_DIR/python:$PYTHONPATH
+if [ $CALIBDB_OS = 'Darwin' ]; then
+    export DYLD_LIBRARY_PATH=$CALIBDB_LIBDIR:$DYLD_LIBRARY_PATH
+fi
+export PATH=$CALIBDB_DIR/bin:$PATH
+export PYTHONPATH=$CALIBDB_DIR/python:$PYTHONPATH
+alias cdbmake="make --directory=$CALIBDB_DIR"
+alias cdbgen_class="python $CALIBDB_DIR/bin/gen_class_empty"
+alias cdbtop="cd $CALIBDB_DIR"
+echo
+echo "Finish configuration. To build, type:"
+echo "> cd \$CALIBDB_DIR"
+echo "> make"
+echo
+

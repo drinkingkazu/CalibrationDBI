@@ -1,5 +1,5 @@
 from ROOT import lariov,TTimeStamp
-db=lariov.IOVReader("string")("dbdata0.fnal.gov",
+db=lariov.WebReader("string")("dbdata0.fnal.gov",
                               "8086",
                               "uboonecon_dev",
                               10)

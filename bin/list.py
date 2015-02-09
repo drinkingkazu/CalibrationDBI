@@ -71,5 +71,6 @@ if __name__ == '__main__':
         sys.stderr.write('\n')
         sys.stderr.write('  Invalid argument (%s) for %s!\n' % (sys.argv[2:len(sys.argv)],sys.argv[1]))
         sys.stderr.write('\n')
+        raise e
         sys.exit(1)
     sys.exit(0)

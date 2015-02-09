@@ -14,7 +14,7 @@ OBJECTS = $(SOURCES:.cxx=.o)
 # include options for this package
 INCFLAGS  = -I.
 INCFLAGS += -I$(CALIBDB_DIR)
-INCFLAGS += -I$(LIBWDA_FQ_DIR)/include
+INCFLAGS += -I$(LIBWDA_INC)
 
 # platform-specific options
 OSNAME          = $(shell uname -s)
