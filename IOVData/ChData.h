@@ -30,7 +30,7 @@ namespace lariov {
     ChData() : std::vector<T>() {}
     
     /// Default destructor
-    ~ChData(){}
+    virtual ~ChData(){}
 
     void Channel(unsigned int ch) { _ch = ch;   }
 

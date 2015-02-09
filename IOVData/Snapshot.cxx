@@ -2,27 +2,55 @@
 #define IOVDATA_SNAPSHOT_CXX
 
 #include "Snapshot.h"
+#include "UtilFunc.h"
 #include "IOVDataError.h"
+
 namespace lariov {
 
   template <class T>
-  Snapshot<T>::Snapshot(std::string name)
-  : _name(name)
+  Snapshot<T>::Snapshot(std::string folder)
+    : _folder(folder)
+  {this->clear();}
+
+  template <class T>
+  Snapshot<T>::Snapshot(const std::string& folder,
+			const std::vector<std::string>& field_name,
+			const std::vector<std::string>& field_type)
+    : Snapshot(folder,field_name,::lariov::Str2ValueType(field_type))
   {}
+
+  template <class T>
+  Snapshot<T>::Snapshot(const std::string& folder,
+			const std::vector<std::string>& field_name,
+			const std::vector< ::lariov::ValueType_t>& field_type)
+    : _folder(folder)
+    , _field_name(field_name)
+    , _field_type(field_type)
+  {
+
+    if(field_name.size()!=field_type.size())
+      throw IOVDataError("Name & Type column array has mis-match in length!");
+
+    size_t ctr=0;
+    for(size_t i=0; i<_field_name.size(); ++i) {
+      if(_field_name[i] == "channel") continue;
+      if(_field_name_to_index.find(_field_name[i]) != _field_name_to_index.end())
+	throw IOVDataError("Duplicate name used!");
+      _field_name_to_index[_field_name[i]] = ctr;
+      ctr++;
+    }
+  }
 
   template <class T>
   void Snapshot<T>::clear()
   { 
     std::vector<lariov::ChData<T> >::clear();
-    _iov_start.SetSec(0);
-    _iov_end.SetSec(0);
-    _field_name.clear();
-    _field_type.clear();
-    _field_name_to_index.clear();
+    _iov_start = kMAX_TIME;
+    _iov_end = kMAX_TIME;
   }
 
   template <class T>
-  const std::string& Snapshot<T>::Name () const { return _name;      }
+  const std::string& Snapshot<T>::Folder () const { return _folder;      }
 
   template <class T>
   const TTimeStamp&  Snapshot<T>::Start() const { return _iov_start; }
@@ -74,48 +102,41 @@ namespace lariov {
   }
 
   template <class T>
-  void Snapshot<T>::Reset (const TTimeStamp& iov_start,
-			   const TTimeStamp& iov_end,
-			   const std::vector<std::string>& field_name,
-			   const std::vector<std::string>& field_type)
+  bool Snapshot<T>::Compat(const std::vector<std::string>& field_name,
+			   const std::vector<std::string>& field_type) const
+  { return Compat(field_name,Str2ValueType(field_type)); }
+
+  template <class T>
+  bool Snapshot<T>::Compat(const std::vector<std::string>& field_name,
+			   const std::vector< ::lariov::ValueType_t> field_type) const
+  {
+    if(FieldName().size() != field_name.size() ||
+       FieldType().size() != field_type.size() ) return false;
+    
+    for(size_t i=0; i<this->FieldName().size(); ++i) {
+      
+      auto const& name1 = this->FieldName()[i];
+      auto const& name2 = field_name[i];
+      auto const& type1 = this->FieldType()[i];
+      auto const& type2 = field_type[i];
+      
+      if(name1 != name2 || type1 != type2)
+	return false;
+    }
+    return true;
+  }
+
+  template <class T>
+  void Snapshot<T>::Reset (const TTimeStamp iov_start,
+			   const TTimeStamp iov_end)
   {
     if(iov_start >= iov_end)
       throw IOVDataError("IOV start cannot be larger than the end!");
     this->clear();
     _iov_start = iov_start;
     _iov_end   = iov_end;
-    if(field_name.size()!=field_type.size())
-      throw IOVDataError("Name & Type column array has mis-match in length!");
-    _field_name = field_name;
-
-    size_t ctr=0;
-    for(size_t i=0; i<_field_name.size(); ++i) {
-      if(_field_name[i] == "channel") continue;
-      _field_name_to_index[_field_name[i]] = ctr;
-      ctr++;
-    }
-
-    _field_type.resize(field_type.size());
-    
-    for(size_t i=0; i<field_type.size(); ++i) {
-
-      auto const& ft = field_type[i];
-      ValueType_t vt(kUNKNOWN);
-      if     ( ft == "smallint" || ft == "smallserial" ) vt = kSHORT;
-      else if( ft == "integer"  || ft == "serial"      ) vt = kINT;
-      else if( ft == "bigint"   || ft == "bigserial"   ) vt = kLONG;
-      else if( ft == "real"                            ) vt = kFLOAT;
-      else if( ft == "double precision"                ) vt = kDOUBLE;
-      else if( ft == "text"                            ) vt = kSTRING;
-      else {
-	std::string msg("Unknown data type: ");
-	msg += "\"" + ft + "\"";
-	throw IOVDataError(msg.c_str());
-      }
-      _field_type[i] = vt;
-    }
   }
-
+  //  ClassImp(Snapshot)  
 }
 
 #endif

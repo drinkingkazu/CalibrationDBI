@@ -15,19 +15,7 @@
 #pragma link C++ class lariov::ChData<string>+;
 #pragma link C++ class std::vector< lariov::ChData<string> >+;
 #pragma link C++ class lariov::Snapshot<string>+;
+#pragma link C++ class std::vector<lariov::Snapshot<string> >+;
+#pragma link C++ class lariov::SnapshotCollection<string>+;
 //ADD_NEW_CLASS ... do not change this line
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-

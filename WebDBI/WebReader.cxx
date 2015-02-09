@@ -28,16 +28,14 @@ namespace lariov {
 					   const TTimeStamp&  ts)
   {
     auto iter = _data_m.find(name);
-    if(iter == _data_m.end()) {
-      iter = (_data_m.emplace(std::make_pair(name,Snapshot<T>(name)))).first;
-    }
-    if((*iter).second.Valid(ts)) return (*iter).second;
+    if(iter != _data_m.end() && (*iter).second.Valid(ts))
+      return (*iter).second;
 
     std::string url("http://");
     url += _server;
     if(!_port.empty()) url += ":" + _port;
     url += "/" + _dbname + "/app";
-    url += "/data?f=" + (*iter).second.Name();
+    url += "/data?f=" + name;
     url += "&t=" + std::to_string(ts.GetSec()) + "." + std::to_string(int(ts.GetNanoSec()/1.e9));
     
     int err_code=0;
@@ -70,7 +68,6 @@ namespace lariov {
 	    << " [s])";
       throw WebError(msg.str());
     }
-    (*iter).second.reserve(getNtuples(data)-4);
 
     TTimeStamp start, end;
     ChData<T> values;
@@ -130,22 +127,26 @@ namespace lariov {
 	  field_name = str_array;
 	else if (!field_type.size()) {
 	  field_type = str_array;
-	  (*iter).second.Reset(start, end, field_name, field_type);
+	  if(iter==_data_m.end()) 
+	    iter = _data_m.insert(std::make_pair(name,Snapshot<T>(name,field_name,field_type))).first;
+	  (*iter).second.Compat(field_name,field_type);
+	  (*iter).second.Reset(start, end);
+	  (*iter).second.reserve(nrows-4);
 	}
 	else{
 	  values.resize(str_array.size()-1);
 	  for(size_t column=0; column<str_array.size(); ++column) {
 	    auto const& str = str_array[column];
 	    try{
-	      if(!column) values.Channel(ConvertString<unsigned int>(str));
-	      else values[column-1] = ConvertString<T>(str);
+	      if(!column) values.Channel(FromString<unsigned int>(str));
+	      else values[column-1] = FromString<T>(str);
 	    }catch(const std::exception& e) {
 	      std::ostringstream msg;
 	      msg<<"Failed to parse the string: "<<str.c_str()<<std::endl;
 	      throw WebError(msg.str());
 	    }
 	  }
-	  (*iter).second.Append(values);
+	  (*iter).second.push_back(values);
 	}
       }
       releaseTuple(tup);
