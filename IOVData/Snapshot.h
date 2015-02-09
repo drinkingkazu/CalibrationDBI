@@ -93,11 +93,22 @@ namespace lariov {
     //
   public:
 
-    const lariov::ChData<T>& Data(const size_t n) const
+    const lariov::ChData<T>& Row(const size_t n) const
     {
       if(n >= this->size())
 	throw IOVDataError("Invalid row number requested!");
       return (*this)[n];
+    }
+
+    const lariov::ChData<T>& ChData(const unsigned int ch) const
+    {
+      auto iter = std::lower_bound (this->begin(), this->end(), ch);
+      if(iter == this->end()) {
+	std::string msg("Channel not found: ");
+	msg += std::to_string(ch);
+	throw IOVDataError(msg);
+      }
+      return (*iter);
     }
 
     inline void push_back(const lariov::ChData<T>& data)
@@ -132,7 +143,15 @@ namespace lariov {
   };
 }
 
-template class lariov::Snapshot<std::string>;
+template class lariov::Snapshot< std::string >;
+template class lariov::Snapshot< float  >;
+template class lariov::Snapshot< double >;
+template class lariov::Snapshot< short  >;
+template class lariov::Snapshot< int    >;
+template class lariov::Snapshot< long   >;
+template class lariov::Snapshot< unsigned short >;
+template class lariov::Snapshot< unsigned int   >;
+template class lariov::Snapshot< unsigned long  >;
 
 #endif
 /** @} */ // end of doxygen group 

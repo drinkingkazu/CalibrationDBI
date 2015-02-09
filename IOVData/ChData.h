@@ -60,7 +60,15 @@ namespace std {
   };
 }
 
-template class lariov::ChData<std::string>;
+template class lariov::ChData< std::string >;
+template class lariov::ChData< float  >;
+template class lariov::ChData< double >;
+template class lariov::ChData< short  >;
+template class lariov::ChData< int    >;
+template class lariov::ChData< long   >;
+template class lariov::ChData< unsigned short >;
+template class lariov::ChData< unsigned int   >;
+template class lariov::ChData< unsigned long  >;
 
 #endif
 /** @} */ // end of doxygen group 

@@ -214,8 +214,10 @@ class IOVDataUploader(object):
                 db.disconnect()
                 return False
             defs = []
-            for x in xrange(len(self._data._field_type)):
-                defs.append((self._data.SnapshotArray()[x].FieldName(x),self._data.SnapshotArray()[x].FieldTypeString(x)))
+            field_name = self._data.SnapshotArray()[0].FieldName()
+            field_type = self._data.SnapshotArray()[0].FieldTypeString()
+            for x in xrange(field_name.size()):
+                defs.append((field_name[x],field_type[x]))
             print defs
             folder = db.createFolder(self._data.Folder(),
                                      defs,
@@ -224,7 +226,7 @@ class IOVDataUploader(object):
                                              'uboone_web' : 'r'
                                              }
                                      )
-
+            folder = db.openFolder(self._data.Folder())
         if not AskBinary('Really upload this to the death star?'):
             db.disconnect()
             return False
@@ -237,7 +239,7 @@ class IOVDataUploader(object):
                 ss = self._data.SnapshotArray()[x]
                 ts = ss.Start()
                 for y in xrange(ss.size()):
-                    ch_data = ss.Data(y)
+                    ch_data = ss.Row(y)
                     values = []
                     for z in xrange(ch_data.size()):
                         values.append(str(ch_data[z]))

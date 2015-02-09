@@ -1,0 +1,13 @@
+#
+# Simple text file for uploading calibration constants
+#
+
+FOLDER kazu_pedestal        # Folder name
+TIME   2015-02-06 00:45:00  # Time stamp for validity range start
+FIELD  mean  rms            # Field names
+TYPE   float float          # Field types
+DATA_BEGIN                  # Specification of data block begin
+0 1.5 0                     # Channel + field values
+1 1.5 0                     # Channel + field values
+2 1.5 0                     # Channel + field values
+DATA_END                    # Specification of data block end

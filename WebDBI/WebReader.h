@@ -32,7 +32,7 @@ namespace lariov {
     WebReader(std::string  server  = "default",
 	      std::string  port    = "default",
 	      std::string  dbname  = "default",
-	      unsigned int timeout = 0);
+	      unsigned int timeout = 10);
     
     /// Default destructor
     ~WebReader(){}
@@ -52,7 +52,16 @@ namespace lariov {
   };
 }
 
-template class lariov::WebReader<std::string>;
+template class lariov::WebReader< std::string >;
+template class lariov::WebReader< float  >;
+template class lariov::WebReader< double >;
+template class lariov::WebReader< short  >;
+template class lariov::WebReader< int    >;
+template class lariov::WebReader< long   >;
+template class lariov::WebReader< unsigned short >;
+template class lariov::WebReader< unsigned int   >;
+template class lariov::WebReader< unsigned long  >;
+
 #endif
 /** @} */ // end of doxygen group 
 

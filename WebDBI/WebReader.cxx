@@ -61,13 +61,18 @@ namespace lariov {
       std::ostringstream msg;
       if(nrows)
 	msg << "Not enough information loaded (#rows = " << nrows << " < 4)";
-      else
-	msg << "No data ... likely connection timed-out (" 
-	    << fWatch.RealTime()
-	    << " / "
-	    << _timeout
-	    << " [s])";
-      throw WebError(msg.str());
+      else {
+	auto time_taken = fWatch.RealTime();
+	if(time_taken > (double)(_timeout))
+	  msg << "No data ... likely connection timed-out!" ;
+	else
+	  msg << "No data ... likely incorrect folder name / invalid timestamp!" ;
+
+	msg << std::endl
+	    << "URL: " << url << std::endl
+	    << "Time taken: " << time_taken << " / " << _timeout << " [s]" << std::endl;
+	throw WebError(msg.str());
+      }
     }
 
     TTimeStamp start, end;
@@ -78,6 +83,7 @@ namespace lariov {
     std::vector<std::string> field_type;
     char indefinite[30]="-";
     char buf[30];
+    int ch_column = -1;
     for(size_t row=0; row<nrows; ++row) {
       auto tup = getTuple(data,row);
       str_array.resize(getNfields(tup),"");
@@ -124,10 +130,23 @@ namespace lariov {
 	  str_array[column].assign(buf,str_size);
 	}
 
-	if (!field_name.size()) 
-	  field_name = str_array;
+	if (!field_name.size()) {
+	  field_name.reserve(str_array.size());
+	  for(size_t i=0; i<str_array.size(); ++i) {
+	    auto const& str = str_array[i];
+	    if(str == "channel") ch_column = i;
+	    else field_name.push_back(str);
+	  }
+	  if( ch_column < 0)
+	    throw WebError("Channel field not found!");
+	}
 	else if (!field_type.size()) {
-	  field_type = str_array;
+	  field_type.reserve(str_array.size());
+	  for(size_t i=0; i<str_array.size(); ++i) {
+	    auto const& str = str_array[i];
+	    if(ch_column == ((int)i)) continue;
+	    field_type.push_back(str);
+	  }
 	  if(iter==_data_m.end()) 
 	    iter = _data_m.insert(std::make_pair(name,Snapshot<T>(name,field_name,field_type))).first;
 	  (*iter).second.Compat(field_name,field_type);
@@ -139,7 +158,7 @@ namespace lariov {
 	  for(size_t column=0; column<str_array.size(); ++column) {
 	    auto const& str = str_array[column];
 	    try{
-	      if(!column) values.Channel(FromString<unsigned int>(str));
+	      if(ch_column == ((int)column)) values.Channel(FromString<unsigned int>(str));
 	      else values[column-1] = FromString<T>(str);
 	    }catch(const std::exception& e) {
 	      std::ostringstream msg;

@@ -75,8 +75,15 @@ namespace lariov {
 
 }
 
-//template class std::vector<lariov::Snapshot<std::string> >;
-template class lariov::SnapshotCollection<std::string>;
+template class lariov::SnapshotCollection< std::string >;
+template class lariov::SnapshotCollection< float  >;
+template class lariov::SnapshotCollection< double >;
+template class lariov::SnapshotCollection< short  >;
+template class lariov::SnapshotCollection< int    >;
+template class lariov::SnapshotCollection< long   >;
+template class lariov::SnapshotCollection< unsigned short >;
+template class lariov::SnapshotCollection< unsigned int   >;
+template class lariov::SnapshotCollection< unsigned long  >;
 
 #endif
 /** @} */ // end of doxygen group 
