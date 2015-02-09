@@ -5,7 +5,8 @@ CXXFLAGS += -I$(LIBWDA_INC)
 CXXFLAGS += -I. $(shell root-config --cflags) -g
 
 # Include your shared object lib location
-LDFLAGS += -L$(CALIBDB_LIBDIR) -lWebDBI
+#LDFLAGS += -lcurl
+LDFLAGS += -L$(CALIBDB_LIBDIR) -lIOVData -lWebDBI
 LDFLAGS += -L$(LIBWDA_LIB) -lwda
 LDFLAGS += $(shell root-config --libs) -lPhysics -lMatrix -g
 

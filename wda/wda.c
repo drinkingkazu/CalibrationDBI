@@ -19,8 +19,8 @@
 
 
 #define DEBUG   0
-#define DEBUG_MALLOC 1
-#define USE_MMAPPED 0
+#define DEBUG_MALLOC 0
+#define USE_MMAPPED 1
 /*
  * Internal data structures
  */

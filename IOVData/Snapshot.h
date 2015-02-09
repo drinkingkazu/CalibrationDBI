@@ -115,9 +115,9 @@ namespace lariov {
     std::vector<lariov::ValueType_t> _field_type;
     std::map<std::string,size_t> _field_name_to_index;
   };
-
-  template class Snapshot<std::string>;
 }
+
+template class lariov::Snapshot<std::string>;
 
 #endif
 /** @} */ // end of doxygen group 

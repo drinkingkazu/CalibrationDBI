@@ -17,5 +17,4 @@ rootlibmap() {
 ######################################################
 # Base
 rootlibmap libWebDBI.rootmap libWebDBI.so $CALIBDB_DIR/WebDBI/LinkDef.h \
-    /usr/lib/libcurl \
     libwda.so

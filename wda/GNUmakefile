@@ -32,11 +32,11 @@ lib/$(SHLIB): $(OBJ)
 
 %.o: %.c
 	@echo "<<compiling "$@">>"
-	@$(CC) -c -o $@ $(CFLAGS) $<
+	@$(CC) -c -o $@ $(CXXFLAGS) $<
 
 .depend: $(SRC) $(HDR)
-	@rm .depend
+	@rm -f .depend
 	@echo '<< checking dependencies >>'
-	@$(CC) -M $(CFLAGS) $(INCFLAGS) $(SRC) > .depend
+	@$(CC) -M $(CXXFLAGS) $(INCFLAGS) $(SRC) > .depend
 
 -include .depend

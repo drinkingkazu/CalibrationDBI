@@ -19,13 +19,14 @@ fi
 unset me;
 
 if [[ -z $LIBWDA_FQ_DIR ]]; then
-    echo "Using pre-compiled libwda..."
+    echo "LIBWDA_FQ_DIR not set => buliding libwda locally..."
     export LIBWDA_INC=$CALIBDB_DIR/wda
     export LIBWDA_LIB=$CALIBDB_DIR/lib
     export USE_LOCAL_LIBWDA=1
 else
-    echo "LIBWDA_FQ_DIR not set => buliding libwda locally..."
+    echo "Using pre-compiled libwda..."
     export LIBWDA_INC=$LIBWDA_FQ_DIR/include
+    unset USE_LOCAL_LIBWDA
 fi
 
 echo "CALIBDB_DIR = $CALIBDB_DIR"

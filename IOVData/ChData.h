@@ -61,6 +61,7 @@ namespace std {
 }
 
 template class lariov::ChData<std::string>;
+
 #endif
 /** @} */ // end of doxygen group 
 
