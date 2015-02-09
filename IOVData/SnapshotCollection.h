@@ -36,6 +36,14 @@ namespace lariov {
     /// Default destructor
     virtual ~SnapshotCollection(){}
 
+    const std::vector<lariov::Snapshot<T> >& SnapshotArray() const
+    { return _snapshot_v; }
+
+    const std::string& Folder() const { return _folder; }
+
+    void Merge(const SnapshotCollection& ss_v)
+    { for(auto const& ss : ss_v.SnapshotArray()) Append(ss); }
+
     void Append(const lariov::Snapshot<T>& snapshot)
     {
       if(_folder != snapshot.Folder())
@@ -43,7 +51,7 @@ namespace lariov {
       auto iter = _snapshot_v.rbegin();
       size_t ctr=0;
       while(iter != _snapshot_v.rend() && snapshot.Start() <= (*iter).End()) {
-	if(!ctr && !((*iter).Compat(snapshot.FieldName(),snapshot.FieldType())))
+	if(!ctr && !((*iter).Compat(snapshot)))
 	  throw IOVDataError("Incompatible Snapshot cannot be added!");
 	++iter;
 	++ctr;

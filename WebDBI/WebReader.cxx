@@ -25,7 +25,8 @@ namespace lariov {
 
   template <class T>
   const Snapshot<T>& WebReader<T>::Request(const std::string& name,
-					   const TTimeStamp&  ts)
+					   const TTimeStamp&  ts,
+					   const std::string tag)
   {
     auto iter = _data_m.find(name);
     if(iter != _data_m.end() && (*iter).second.Valid(ts))
@@ -130,7 +131,7 @@ namespace lariov {
 	  if(iter==_data_m.end()) 
 	    iter = _data_m.insert(std::make_pair(name,Snapshot<T>(name,field_name,field_type))).first;
 	  (*iter).second.Compat(field_name,field_type);
-	  (*iter).second.Reset(start, end);
+	  (*iter).second.Reset(start, end, tag);
 	  (*iter).second.reserve(nrows-4);
 	}
 	else{

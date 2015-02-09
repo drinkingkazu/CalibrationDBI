@@ -15,20 +15,17 @@ namespace lariov {
   template <class T>
   Snapshot<T>::Snapshot(const std::string& folder,
 			const std::vector<std::string>& field_name,
-			const std::vector<std::string>& field_type,
-			const std::string tag)
-    : Snapshot(folder,field_name,::lariov::Str2ValueType(field_type),tag)
+			const std::vector<std::string>& field_type)
+    : Snapshot(folder,field_name,::lariov::Str2ValueType(field_type))
   {}
 
   template <class T>
   Snapshot<T>::Snapshot(const std::string& folder,
 			const std::vector<std::string>& field_name,
-			const std::vector< ::lariov::ValueType_t>& field_type,
-			const std::string tag)
+			const std::vector< ::lariov::ValueType_t>& field_type)
     : _folder(folder)
     , _field_name(field_name)
     , _field_type(field_type)
-    , _tag (tag)
   {
 
     if(field_name.size()!=field_type.size())
@@ -62,6 +59,9 @@ namespace lariov {
   const TTimeStamp&  Snapshot<T>::End()   const { return _iov_end;   }
 
   template <class T>
+  const std::string& Snapshot<T>::Tag() const { return _tag; }
+
+  template <class T>
   bool  Snapshot<T>::Valid(const TTimeStamp& ts) const 
   { return (_iov_start < ts && ts < _iov_end); }
 
@@ -88,10 +88,28 @@ namespace lariov {
   }
 
   template <class T>
-  const std::vector<ValueType_t>& Snapshot<T>::FieldType() const { return _field_type; }
+  const std::string Snapshot<T>::FieldTypeString(const size_t column) const
+  {
+    if(column >= _field_type.size())
+      throw IOVDataError("Invalid column number requested!");
+    return ValueType2Str(_field_type[column]);
+  }
 
   template <class T>
   const std::vector<std::string>& Snapshot<T>::FieldName() const { return _field_name; }
+
+  template <class T>
+  const std::vector<ValueType_t>& Snapshot<T>::FieldType() const { return _field_type; }
+
+  template <class T>
+  const std::vector<std::string> Snapshot<T>::FieldTypeString() const 
+  { 
+    std::vector<std::string> res;
+    res.reserve(_field_type.size());
+    for(auto const& v : _field_type)
+      res.push_back(ValueType2Str(v));
+    return res;
+  }
 
   template <class T>
   size_t Snapshot<T>::Name2Index(const std::string& field_name) const
@@ -102,6 +120,14 @@ namespace lariov {
       throw IOVDataError(msg.c_str());
     }
     return (*iter).second;
+  }
+
+  template <class T>
+  bool Snapshot<T>::Compat(const Snapshot<T>& data) const
+  {
+    if(data.Folder() != _folder) return false;
+    if(data.Tag() != _tag) return false;
+    return Compat(data.FieldName(),data.FieldType());
   }
 
   template <class T>
@@ -130,16 +156,24 @@ namespace lariov {
   }
 
   template <class T>
-  void Snapshot<T>::Reset (const TTimeStamp iov_start,
-			   const TTimeStamp iov_end)
+  void Snapshot<T>::Reset (const TTimeStamp iov_start)
   {
-    if(iov_start >= iov_end)
-      throw IOVDataError("IOV start cannot be larger than the end!");
     this->clear();
     _iov_start = iov_start;
-    _iov_end   = iov_end;
+    _iov_end   = kMAX_TIME;
   }
-  //  ClassImp(Snapshot)  
+
+  template <class T>
+  void Snapshot<T>::Reset(const TTimeStamp& start, const TTimeStamp& end, const std::string tag)
+  {
+    if(start >= end)
+      throw IOVDataError("Cannot set start time >= end time!");
+    this->clear();
+    _iov_start = start;
+    _iov_end   = end;
+    _tag = tag;
+  }
+    
 }
 
 #endif

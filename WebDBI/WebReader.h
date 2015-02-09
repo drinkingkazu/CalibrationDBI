@@ -38,7 +38,8 @@ namespace lariov {
     ~WebReader(){}
 
     const Snapshot<T>& Request(const std::string& name,
-			       const TTimeStamp&  ts);
+			       const TTimeStamp&  ts,
+			       const std::string tag="");
     
   private:
 

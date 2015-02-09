@@ -50,29 +50,31 @@ namespace lariov {
     /// Alternative ctor ... for creating Snapshot to be uploaded
     Snapshot(const std::string& folder,
 	     const std::vector<std::string>& field_name,
-	     const std::vector<std::string>& field_type,
-	     const std::string tag="");
+	     const std::vector<std::string>& field_type);
 
     Snapshot(const std::string& name,
 	     const std::vector<std::string>& field_name,
-	     const std::vector< ::lariov::ValueType_t>& field_type,
-	     const std::string tag="");
+	     const std::vector< ::lariov::ValueType_t>& field_type);
 
     void clear();
 
     const std::string& Folder() const;
     const TTimeStamp&  Start() const;
     const TTimeStamp&  End()   const;
-
+    const std::string& Tag() const;
     bool   Valid(const TTimeStamp& ts) const;
     size_t NChannels()    const;
     size_t NFields() const;
 
     const std::string& FieldName(const size_t column) const;
     ValueType_t        FieldType(const size_t column) const;
-    const std::vector<lariov::ValueType_t>& FieldType() const;
+    const std::string  FieldTypeString(const size_t column) const;
     const std::vector<std::string>& FieldName() const;
+    const std::vector<lariov::ValueType_t>& FieldType() const;
+    const std::vector<std::string>  FieldTypeString() const;
     size_t Name2Index(const std::string& field_name) const;
+
+    bool Compat(const Snapshot<T>& data) const;
 
     bool Compat(const std::vector<std::string>& field_name,
 		const std::vector<std::string>& field_type) const;
@@ -80,13 +82,17 @@ namespace lariov {
     bool Compat(const std::vector<std::string>& field_name,
 		const std::vector< ::lariov::ValueType_t> field_type) const;
 
-    void Reset(const TTimeStamp start = ::lariov::kMIN_TIME,
-	       const TTimeStamp end   = ::lariov::kMAX_TIME);
+    void Reset(const TTimeStamp start = ::lariov::kMIN_TIME);
+
+  private:
+    
+    void Reset(const TTimeStamp& start, const TTimeStamp& end, const std::string tag="");
     
     //
     // Template functions
     //
   public:
+
     const lariov::ChData<T>& Data(const size_t n) const
     {
       if(n >= this->size())
@@ -99,7 +105,7 @@ namespace lariov {
 
       if(!(_field_type.size())) throw IOVDataError("Not configured yet toadd ChData!!");
 
-      if(data.size() != (_field_type.size()-1))
+      if(data.size() != (_field_type.size()))
 	throw IOVDataError("Invalid number of columns in the new row!");
 
       bool sort = (this->size() && data < this->back());

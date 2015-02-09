@@ -10,6 +10,10 @@ namespace lariov{
   
   std::vector<std::string> ValueType2Str(const std::vector<lariov::ValueType_t>& field_type);
 
+  lariov::ValueType_t Str2ValueType(const std::string& field_type);
+  
+  std::string ValueType2Str(const lariov::ValueType_t& field_type);
+
   template <class T>
   T FromString( const std::string& value );
   template<> std::string    FromString< std::string    > (const std::string& value );
