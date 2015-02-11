@@ -12,7 +12,7 @@ npoints = 100
 if len(sys.argv)>=7:
     npoints= int(sys.argv[6])
 
-db = lariov.WebReader("double")()
+db = lariov.WebReader("double").GetME()
 start = TTimeStamp(start.year, start.month,  start.day, 
                    start.hour, start.minute, start.second, 
                    start.microsecond*1000, 

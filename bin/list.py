@@ -33,7 +33,7 @@ def list_ch(arg):
     if not len(arg) == 2: raise IndexError
     from lariov import lariov
     from ROOT import TTimeStamp
-    web_reader = lariov.WebReader()
+    web_reader = lariov.WebReader("string").GetME()
     t = datetime.strptime(arg[1],'%Y-%m-%d %H:%M:%S')
 
     t = TTimeStamp(t.year, t.month, t.day, t.hour, t.minute, t.second);

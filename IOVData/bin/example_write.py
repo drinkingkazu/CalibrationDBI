@@ -13,8 +13,11 @@ field_type.push_back("real")
 
 folder = "pedestal"
 
-col  = lariov.SnapshotCollection("string")(folder)
 ss   = lariov.Snapshot("string")(folder,field_name,field_type)
+help(ss)
+
+col  = lariov.SnapshotCollection("string")(folder)
+
 data = lariov.ChData("string")()
 
 start = TTimeStamp()
