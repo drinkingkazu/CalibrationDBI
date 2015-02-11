@@ -61,6 +61,7 @@
 #pragma link C++ class lariov::SnapshotCollection<unsigned int    >+;
 #pragma link C++ class lariov::SnapshotCollection<unsigned long   >+;
 
+#pragma link C++ class lariov::GetCalibTPCResults+;
 //#pragma link C++ class lariov::Snapshot<string>+;
 //#pragma link C++ class std::vector<lariov::Snapshot<string> >+;
 //#pragma link C++ class lariov::SnapshotCollection<string>+;
