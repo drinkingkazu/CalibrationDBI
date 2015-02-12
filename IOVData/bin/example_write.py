@@ -4,21 +4,15 @@ from ROOT import std
 field_name = std.vector("string")()
 field_type = std.vector("string")()
 
-field_name.push_back("channel")
 field_name.push_back("mean")
 field_name.push_back("rms")
-field_type.push_back("bigint")
 field_type.push_back("real")
 field_type.push_back("real")
 
 folder = "pedestal"
-
-ss   = lariov.Snapshot("string")(folder,field_name,field_type)
-help(ss)
-
-col  = lariov.SnapshotCollection("string")(folder)
-
-data = lariov.ChData("string")()
+col  = lariov.SnapshotCollection("float")(folder)
+ss   = lariov.Snapshot("float")(folder,field_name,field_type)
+data = lariov.ChData("float")()
 
 start = TTimeStamp()
 end   = TTimeStamp()
@@ -28,13 +22,13 @@ for x in xrange(10):
     ss.clear()
     start.SetSec(x*100)
     end.SetSec((x+1)*100-1)
-    ss.Reset(start,end)
+    ss.Reset(start)
     for y in xrange(100):
 
-        data.resize(2,"")
+        data.resize(2,0.)
         data.Channel(y)
-        data[0]="10."
-        data[1]="0.5"
+        data[0]=10.
+        data[1]=0.5
         ss.push_back(data)
     col.Append(ss)
 
