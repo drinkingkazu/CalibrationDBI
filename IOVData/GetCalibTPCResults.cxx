@@ -7,7 +7,6 @@ namespace lariov {
 
   GetCalibTPCResults::GetCalibTPCResults(const std::string infile)
     : _f(nullptr)
-    , _snapshotColl(nullptr)
   {
 
     // Open TFile with info
@@ -15,11 +14,19 @@ namespace lariov {
     _f = new TFile(infile.c_str());
     std::cout << "File was opened" << std::endl;
     
+
+
+  }
+
+  void GetCalibTPCResults::PrepareSnapshotCollection(const std::string foldername){
+
+    _foldername = foldername;
+
     // Create SnapshotCollection
-    if (_snapshotColl) delete _snapshotColl;
-    _snapshotColl = new SnapshotCollection<std::string>("CalibrationsTPC");
+    SnapshotCollection<std::string> thissnapcoll(foldername.c_str());
+    _snapshotColl.push_back(thissnapcoll);
     std::cout << "SnapshotCollection was created with folder name: "
-	      << _snapshotColl->Folder() << std::endl;
+	      << _snapshotColl.back().Folder() << std::endl;
 
   }
 
@@ -34,25 +41,27 @@ namespace lariov {
 
   void GetCalibTPCResults::GetTimeStamp(){
 
-    // Now loop over Data TTree entries
-    int nentries = _tData->GetEntries();
     // First (and only) entry will sync _time variable
     _tData->GetEntry(0);
-    
-
   }
 
-  void GetCalibTPCResults::WriteSnapshotColl(TFile *fout, TTree *tree){
+  void GetCalibTPCResults::WriteToFile(TFile *f){
 
-    if (!fout)
-      fout = new TFile("out.root","RECREATE"); 
-    if (!tree)
-      tree = new TTree("data_tree","");
+    if (!f)
+      f = new TFile("out.root","RECREATE");
+    f->cd();
     
+    for (size_t n=0; n < _snapshotColl.size(); n++){
+      TTree *t = new TTree("storage_tree","");
+      _snapshotColl[n].Write(*t);
+      std::cout << "Writing snapshotColl to tree...";
+      t->Write();
+      delete t;
+      std::cout << "...Written to tree" << std::endl;
+    }
 
-    _snapshotColl->Write(*tree);
-    tree->Write();
-    fout->Close();
+    f->Close();
+    std::cout << "Output file closed." << std::endl;
 
     return;
   }
@@ -60,9 +69,11 @@ namespace lariov {
   void GetCalibTPCResults::FillSnapshot(float ASICgain, float shT){
 
     std::vector<std::string> snapshot_fieldnames = {"pedestal","RMS","Area Gain","Amp Gain"};
-    std::vector<std::string> snapshot_fieldtypes = {"float","float","float","float"};
+    // create vector of value types for snapshot
+    std::vector<::lariov::ValueType_t> snapshot_valuetypes = {lariov::kFLOAT, lariov::kFLOAT, lariov::kFLOAT, lariov::kFLOAT};
+
     std::cout << "Creating Snapshot...";
-    Snapshot<std::string> thissnap("CalibrationsTPC",snapshot_fieldnames,snapshot_fieldtypes);
+    Snapshot<std::string> thissnap(_foldername.c_str(),snapshot_fieldnames,snapshot_valuetypes);
     // Set time for snapshot
     thissnap.Reset(_time);
     std::cout << "\t...Done creating Snapshot!" << std::endl;
@@ -98,17 +109,19 @@ namespace lariov {
       if ( ChDataMap.find(_chnumG) == ChDataMap.end() ) continue;
       ChDataMap[_chnumG].push_back(std::to_string(_amplgain));
       ChDataMap[_chnumG].push_back(std::to_string(_areagain));
+      /*
       std::cout << "Channel: " << _chnumG << std::endl
 		<< "pedestal: " << ChDataMap[_chnumG][0]
 		<< "\tnoise: " << ChDataMap[_chnumG][1]
 		<< "\tamp G: " << ChDataMap[_chnumG][2]
 		<< "\tarea G: " << ChDataMap[_chnumG][3] << std::endl << std::endl;
+      */
       // Finally push back to snapshot collection
       thissnap.push_back(ChDataMap[_chnumG]);
     }
     
     // Now append the Snapshot to the SnapshotCollection
-    _snapshotColl->Append(thissnap);
+    _snapshotColl.back().Append(thissnap);
   }
 
 

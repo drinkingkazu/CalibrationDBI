@@ -18,8 +18,10 @@ namespace lariov {
     virtual ~GetCalibTPCResults(){}
     
     // Now Write snapshot collection to file
-    void WriteSnapshotColl(TFile *f=nullptr, TTree *t=nullptr);
+    void WriteToFile(TFile *f=nullptr);
 
+    // Prepare Collection
+    void PrepareSnapshotCollection(const std::string foldername);
     // Get the trees we want
     void GetTrees();
     // Synch Tree branches & variables
@@ -34,7 +36,8 @@ namespace lariov {
   private:
 
     TFile *_f;
-    SnapshotCollection<std::string> *_snapshotColl;
+    std::vector<::lariov::SnapshotCollection<std::string> > _snapshotColl;
+    std::string _foldername;
 
     // Variables to sync with Branches
     float _pedestal;
