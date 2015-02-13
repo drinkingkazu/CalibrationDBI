@@ -21,9 +21,9 @@ endif
 # Define directories to be compile upon a global "make"...
 #
 ifndef USE_LOCAL_LIBWDA
-SUBDIRS := IOVDB IOVData WebDBI
+SUBDIRS := IOVDB IOVData WebDBI GetData
 else
-SUBDIRS := wda IOVDB IOVData WebDBI
+SUBDIRS := wda IOVDB IOVData WebDBI GetData
 endif
 #####################################################################################
 #

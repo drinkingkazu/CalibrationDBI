@@ -17,4 +17,8 @@ template class lariov::SnapshotCollection<lariov::Quality>;
 template class lariov::Snapshot<lariov::Pedestal>;
 template class lariov::SnapshotCollection<lariov::Pedestal>;
 
+#include "TPCCalib.h"
+template class lariov::Snapshot<lariov::TPCCalib>;
+template class lariov::SnapshotCollection<lariov::TPCCalib>;
+
 #endif

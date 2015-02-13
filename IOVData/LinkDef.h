@@ -30,6 +30,13 @@
 #pragma link C++ class std::vector<lariov::Snapshot<lariov::Pedestal> >+;
 #pragma link C++ class lariov::SnapshotCollection<lariov::Pedestal>+;
 
+// For TPC Calibrations
+#pragma link C++ class lariov::TPCCalib+;
+#pragma link C++ class std::vector<lariov::TPCCalib>+;
+#pragma link C++ class lariov::Snapshot<lariov::TPCCalib>+;
+#pragma link C++ class std::vector<lariov::Snapshot<lariov::TPCCalib> >+;
+#pragma link C++ class lariov::SnapshotCollection<lariov::TPCCalib>+;
+
 //#pragma link C++ class lariov::GetCalibTPCResults+;
 //ADD_NEW_CLASS ... do not change this line
 #endif
