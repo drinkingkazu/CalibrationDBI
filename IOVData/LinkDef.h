@@ -16,6 +16,20 @@
 #pragma link C++ class std::vector<lariov::Snapshot<lariov::ChDataToy> >+;
 #pragma link C++ class lariov::SnapshotCollection<lariov::ChDataToy>+;
 
+// For Quality
+#pragma link C++ class lariov::Quality+;
+#pragma link C++ class std::vector<lariov::Quality>+;
+#pragma link C++ class lariov::Snapshot<lariov::Quality>+;
+#pragma link C++ class std::vector<lariov::Snapshot<lariov::Quality> >+;
+#pragma link C++ class lariov::SnapshotCollection<lariov::Quality>+;
+
+// For Pedestal
+#pragma link C++ class lariov::Pedestal+;
+#pragma link C++ class std::vector<lariov::Pedestal>+;
+#pragma link C++ class lariov::Snapshot<lariov::Pedestal>+;
+#pragma link C++ class std::vector<lariov::Snapshot<lariov::Pedestal> >+;
+#pragma link C++ class lariov::SnapshotCollection<lariov::Pedestal>+;
+
 //#pragma link C++ class lariov::GetCalibTPCResults+;
 //ADD_NEW_CLASS ... do not change this line
 #endif

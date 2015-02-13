@@ -1,9 +1,9 @@
 /**
- * \file DeadChannel.h
+ * \file Pedestal.h
  *
  * \ingroup IOVData
  * 
- * \brief Class def header for a class DeadChannel
+ * \brief Class def header for a class Pedestal
  *
  * @author kterao
  */
@@ -11,24 +11,24 @@
 /** \addtogroup IOVData
 
     @{*/
-#ifndef IOVDATA_DEADCHANNEL_H
-#define IOVDATA_DEADCHANNEL_H
+#ifndef IOVDATA_PEDESTAL_H
+#define IOVDATA_PEDESTAL_H
 
 #include "IOVDB/ChDataBase.h"
 
 namespace lariov{
   /**
-     \class DeadChannel
+     \class Pedestal
   */
-  class DeadChannel : public lariov::ChDataBase {
+  class Pedestal : public lariov::ChDataBase {
     
   public:
     
     /// Default constructor
-    DeadChannel();
+    Pedestal();
     
     /// Default destructor
-    ~DeadChannel(){}
+    ~Pedestal(){}
 
     virtual void Interpret(const std::vector<std::string>& field_value_v);
 
@@ -36,11 +36,12 @@ namespace lariov{
 
     virtual const std::vector<std::string> ColumnValues() const;
 
-    void Set(bool dead);
+    void Set(float mean, float rms);
 
   private:
 
-    bool _dead;
+    float _mean;
+    float _rms;
 
   };
 }
