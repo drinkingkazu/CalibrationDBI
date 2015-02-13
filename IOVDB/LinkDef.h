@@ -9,12 +9,11 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
-// For ChDataToy
-#pragma link C++ class lariov::ChDataToy+;
-#pragma link C++ class std::vector<lariov::ChDataToy>+;
-#pragma link C++ class lariov::Snapshot<lariov::ChDataToy>+;
-#pragma link C++ class std::vector<lariov::Snapshot<lariov::ChDataToy> >+;
-#pragma link C++ class lariov::SnapshotCollection<lariov::ChDataToy>+;
+#pragma link C++ namespace lariov+;
+#pragma link C++ enum  lariov::ValueType_t+;
+#pragma link C++ class lariov::IOVDBError+;
+#pragma link C++ class lariov::ColumnDef+;
+#pragma link C++ class lariov::TableDef+;
 
 //#pragma link C++ class lariov::GetCalibTPCResults+;
 //ADD_NEW_CLASS ... do not change this line

@@ -3,8 +3,8 @@
 #
 
 # specific names for this package
-DICT  = IOVDataDict
-SHLIB = libIOVData.so
+DICT  = IOVDBDict
+SHLIB = libIOVDB.so
 
 SOURCES = $(filter-out $(DICT).cxx, $(wildcard *.cxx))
 FMWK_HEADERS = LinkDef.h $(DICT).h
@@ -13,7 +13,6 @@ OBJECTS = $(SOURCES:.cxx=.o)
 
 # include options for this package
 INCFLAGS  = -I.
-INCFLAGS += -I$(CALIBDB_DIR)
 
 # platform-specific options
 OSNAME          = $(shell uname -s)
@@ -23,8 +22,8 @@ OSNAMEMODE      = $(OSNAME)
 include $(CALIBDB_DIR)/Makefile/Makefile.${OSNAME}
 
 # set compiler options for ROOT
-CXXFLAGS += `root-config --cflags` 
-
+CXXFLAGS +=  `root-config --cflags` 
+CXXFLAGS +="-Dcpp_variable CALIBDB_LOCAL_BUILD"
 # call the common GNUmakefile
 include $(CALIBDB_DIR)/Makefile/GNUmakefile.CORE
 

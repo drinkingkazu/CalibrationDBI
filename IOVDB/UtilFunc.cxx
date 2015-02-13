@@ -1,7 +1,7 @@
-#ifndef IOVDATA_UTILFUNC_CXX
-#define IOVDATA_UTILFUNC_CXX
+#ifndef IOVBASE_UTILFUNC_CXX
+#define IOVBASE_UTILFUNC_CXX
 
-#include "IOVDataError.h"
+#include "IOVDBError.h"
 #include "UtilFunc.h"
 namespace lariov {
 
@@ -17,7 +17,7 @@ namespace lariov {
     else {
       std::string msg("Unknown data type: ");
       msg += "\"" + ft + "\"";
-      throw IOVDataError(msg.c_str());
+      throw IOVDBError(msg.c_str());
     }
     return vt;
   }
@@ -41,7 +41,7 @@ namespace lariov {
     default:
       std::string msg("Unknown data type: ");
       msg += "\"" + std::to_string(vt) + "\"";
-      throw IOVDataError(msg.c_str());	
+      throw IOVDBError(msg.c_str());	
     }
 
     return name;

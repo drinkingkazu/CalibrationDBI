@@ -14,7 +14,7 @@
 #ifndef WEBDBI_WEBREADER_H
 #define WEBDBI_WEBREADER_H
 
-#include "IOVData/Snapshot.h"
+#include "IOVDB/Snapshot.h"
 #include "WDAConnInfo.h"
 #include <map>
 namespace lariov {
@@ -76,15 +76,8 @@ namespace lariov {
   };
 }
 
-template class lariov::WebReader< std::string >;
-template class lariov::WebReader< float  >;
-template class lariov::WebReader< double >;
-template class lariov::WebReader< short  >;
-template class lariov::WebReader< int    >;
-template class lariov::WebReader< long   >;
-template class lariov::WebReader< unsigned short >;
-template class lariov::WebReader< unsigned int   >;
-template class lariov::WebReader< unsigned long  >;
+template <class T>
+lariov::WebReader<T>* lariov::WebReader<T>::_me = nullptr;
 
 #endif
 /** @} */ // end of doxygen group 

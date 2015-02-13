@@ -7,12 +7,9 @@
 #include <sstream>
 #include <wda.h>
 
-#include "IOVData/UtilFunc.h"
+#include "IOVDB/UtilFunc.h"
 #include "WebError.h"
 namespace lariov {
-
-  template <class T>
-  WebReader<T>* WebReader<T>::_me = nullptr;
 
   template <class T>
   WebReader<T>::WebReader()
@@ -77,11 +74,13 @@ namespace lariov {
     }
 
     TTimeStamp start, end;
-    ChData<T> values;
+    T ch_data;
+    std::vector<std::string> ch_data_values;
     std::string str_value;
     std::vector<std::string> str_array;
     std::vector<std::string> field_name;
-    std::vector<std::string> field_type;
+    std::vector<lariov::ValueType_t> field_type;
+    std::vector<size_t> index_map;
     char indefinite[30]="-";
     char buf[30];
     int ch_column = -1;
@@ -146,28 +145,58 @@ namespace lariov {
 	  for(size_t i=0; i<str_array.size(); ++i) {
 	    auto const& str = str_array[i];
 	    if(ch_column == ((int)i)) continue;
-	    field_type.push_back(str);
+	    field_type.push_back(Str2ValueType(str));
 	  }
-	  if(iter==_data_m.end()) 
-	    iter = _data_m.insert(std::make_pair(name,Snapshot<T>(name,field_name,field_type))).first;
-	  (*iter).second.Compat(field_name,field_type);
+	  if(iter==_data_m.end()) {
+	    iter = _data_m.insert(std::make_pair(name,Snapshot<T>(name))).first;
+	  }
+
+	  auto const column_def = ch_data.TableDef().ColumnDefs();
+
+	  if(column_def.size() != field_name.size()) 
+	    throw WebError("Incompatible field counts in the downloaded data!");
+	  for(size_t i=0; i<field_name.size(); ++i) {
+	    int index=-1;
+	    for(size_t j=0; j<column_def.size(); ++j) {
+	      if(field_name[i] == column_def[j].Name()) {
+		if(field_type[i] != column_def[j].Type()) {
+		  std::string msg;
+		  msg += "Found un-matched value type for the field: " + field_name[i];
+		  throw WebError(msg.c_str());
+		}
+		index = j;
+		break;
+	      }
+	    }
+	    if(index<0) {
+	      std::string msg;
+	      msg += "Found undefined field name: " + field_name[i];
+	      throw WebError(msg.c_str());
+	    }
+	    index_map[i]=index;
+	  }
 	  (*iter).second.Reset(start, end, tag);
 	  (*iter).second.reserve(nrows-4);
+	  ch_data_values.resize(field_name.size(),"");
 	}
 	else{
-	  values.resize(str_array.size()-1);
+	  size_t value_index=0;
 	  for(size_t column=0; column<str_array.size(); ++column) {
 	    auto const& str = str_array[column];
 	    try{
-	      if(ch_column == ((int)column)) values.Channel(FromString<unsigned int>(str));
-	      else values[column-1] = FromString<T>(str);
+	      if(ch_column == ((int)column)) ch_data.Channel(FromString<unsigned int>(str));
+	      else {
+		ch_data_values[index_map[value_index]] = str;
+		++value_index;
+	      }
 	    }catch(const std::exception& e) {
 	      std::ostringstream msg;
 	      msg<<"Failed to parse the string: "<<str.c_str()<<std::endl;
 	      throw WebError(msg.str());
 	    }
 	  }
-	  (*iter).second.push_back(values);
+	  ch_data.Interpret(ch_data_values);
+	  (*iter).second.Append(ch_data);
 	}
       }
       releaseTuple(tup);

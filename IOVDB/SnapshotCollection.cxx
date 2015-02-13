@@ -1,5 +1,5 @@
-#ifndef SNAPSHOTCOLLECTION_CXX
-#define SNAPSHOTCOLLECTION_CXX
+#ifndef IOVDB_SNAPSHOTCOLLECTION_CXX
+#define IOVDB_SNAPSHOTCOLLECTION_CXX
 
 #include "SnapshotCollection.h"
 
@@ -8,7 +8,7 @@ namespace lariov {
   template <class T>
   SnapshotCollection<T>::SnapshotCollection(const std::string folder)
     : _folder (folder)
-  {}
+  { std::transform(_folder.begin(), _folder.end(), _folder.begin(), ::tolower); }
 
   template <class T>
   void SnapshotCollection<T>::Write(TTree& t) const
@@ -63,10 +63,10 @@ namespace lariov {
     tree_name += "_" + _folder;
     auto t = (TTree*)(f.Get(tree_name.c_str()));
     if(!t)
-      throw IOVDataError("Tree not found...");
+      throw IOVDBError("Tree not found...");
 
     if(!(t->GetBranch(_folder.c_str())))
-      throw IOVDataError("Folder not found...");
+      throw IOVDBError("Folder not found...");
 
     _snapshot_v.clear();
 

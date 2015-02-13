@@ -1,18 +1,18 @@
 /**
  * \file SnapshotCollection.h
  *
- * \ingroup IOVData
+ * \ingroup IOVDB
  * 
  * \brief Class def header for a class SnapshotCollection
  *
  * @author kterao
  */
 
-/** \addtogroup IOVData
+/** \addtogroup IOVDB
 
     @{*/
-#ifndef IOVDATA_SNAPSHOTCOLLECTION_H
-#define IOVDATA_SNAPSHOTCOLLECTION_H
+#ifndef IOVDB_SNAPSHOTCOLLECTION_H
+#define IOVDB_SNAPSHOTCOLLECTION_H
 
 #include <iostream>
 #include <TTree.h>
@@ -47,12 +47,12 @@ namespace lariov {
     void Append(const lariov::Snapshot<T>& snapshot)
     {
       if(_folder != snapshot.Folder())
-	throw IOVDataError("You cannot store different folders to one collection!");
+	throw IOVDBError("You cannot store different folders to one collection!");
       auto iter = _snapshot_v.rbegin();
       size_t ctr=0;
       while(iter != _snapshot_v.rend() && snapshot.Start() <= (*iter).End()) {
 	if(!ctr && !((*iter).Compat(snapshot)))
-	  throw IOVDataError("Incompatible Snapshot cannot be added!");
+	  throw IOVDBError("Incompatible Snapshot cannot be added!");
 	++iter;
 	++ctr;
       }	
@@ -74,16 +74,6 @@ namespace lariov {
   };
 
 }
-
-template class lariov::SnapshotCollection< std::string >;
-template class lariov::SnapshotCollection< float  >;
-template class lariov::SnapshotCollection< double >;
-template class lariov::SnapshotCollection< short  >;
-template class lariov::SnapshotCollection< int    >;
-template class lariov::SnapshotCollection< long   >;
-template class lariov::SnapshotCollection< unsigned short >;
-template class lariov::SnapshotCollection< unsigned int   >;
-template class lariov::SnapshotCollection< unsigned long  >;
 
 #endif
 /** @} */ // end of doxygen group 

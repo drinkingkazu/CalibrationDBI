@@ -1,18 +1,18 @@
 /**
- * \file IOVDataError.h
+ * \file IOVDBError.h
  *
- * \ingroup IOVData
+ * \ingroup IOVDB
  * 
- * \brief Collection of exception classes for IOVData
+ * \brief Collection of exception classes for IOVDB
  *
  * @author kterao
  */
 
-/** \addtogroup IOVData
+/** \addtogroup IOVDB
 
     @{*/
-#ifndef IOVDATA_IOVDATAERROR_H
-#define IOVDATA_IOVDATAERROR_H
+#ifndef IOVDB_IOVDBERROR_H
+#define IOVDB_IOVDBERROR_H
 
 #include <iostream>
 #include <exception>
@@ -20,20 +20,20 @@
 namespace lariov {
 
   /**
-     \class IOVDataError
+     \class IOVDBError
   */
-  class IOVDataError : public std::exception{
+  class IOVDBError : public std::exception{
 
   public:
 
-    IOVDataError(std::string msg="") : std::exception()
+    IOVDBError(std::string msg="") : std::exception()
     {
       _msg = "\033[93m";
       _msg += msg;
       _msg += "\033[00m";
     }
     
-    virtual ~IOVDataError() throw(){};
+    virtual ~IOVDBError() throw(){};
     virtual const char* what() const throw()
     { return _msg.c_str(); }
 

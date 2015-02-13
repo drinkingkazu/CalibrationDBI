@@ -1,9 +1,9 @@
-#ifndef IOVDATA_UTILFUNC_H
-#define IOVDATA_UTILFUNC_H
+#ifndef IOVBASE_UTILFUNC_H
+#define IOVBASE_UTILFUNC_H
 
 #include <string>
 #include <vector>
-#include "IOVDataConstants.h"
+#include "IOVDBTypes.h"
 namespace lariov{
 
   std::vector<lariov::ValueType_t> Str2ValueType(const std::vector<std::string>& field_type);

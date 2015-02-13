@@ -17,4 +17,4 @@ rootlibmap() {
 ######################################################
 # Base
 rootlibmap libIOVData.rootmap libIOVData.so $CALIBDB_DIR/IOVData/LinkDef.h \
-    libwda.so
+    libIOVDB

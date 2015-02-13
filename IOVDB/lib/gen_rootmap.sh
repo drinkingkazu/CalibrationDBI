@@ -16,7 +16,4 @@ rootlibmap() {
 
 ######################################################
 # Base
-rootlibmap libWebDBI.rootmap libWebDBI.so $CALIBDB_DIR/WebDBI/LinkDef.h \
-    libIOVDB.so \
-    libIOVData.so \
-    libwda.so
+rootlibmap libIOVDB.rootmap libIOVDB.so $CALIBDB_DIR/IOVDB/LinkDef.h 
