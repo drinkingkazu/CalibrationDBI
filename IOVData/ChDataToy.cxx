@@ -39,5 +39,8 @@ namespace lariov {
     return res;
   }
 
+  void ChDataToy::Set(double x, double y, double z)
+  { _x = x; _y = y; _z = z; }
+
 }
 #endif

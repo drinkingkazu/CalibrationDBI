@@ -14,7 +14,7 @@
 #pragma link C++ class lariov::IOVDBError+;
 #pragma link C++ class lariov::ColumnDef+;
 #pragma link C++ class lariov::TableDef+;
-
+#pragma link C++ class lariov::ChDataBase+;
 //#pragma link C++ class lariov::GetCalibTPCResults+;
 //ADD_NEW_CLASS ... do not change this line
 #endif

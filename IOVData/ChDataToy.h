@@ -36,6 +36,8 @@ namespace lariov{
 
     virtual const std::vector<std::string> ColumnValues() const;
 
+    void Set(double x, double y, double z);
+
   private:
 
     double _x, _y, _z;
