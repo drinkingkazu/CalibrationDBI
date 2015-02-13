@@ -68,9 +68,9 @@ namespace lariov {
 
   void GetCalibTPCResults::FillSnapshot(float ASICgain, float shT){
 
-    std::vector<std::string> snapshot_fieldnames = {"pedestal","RMS","Area Gain","Amp Gain"};
+    std::vector<std::string> snapshot_fieldnames = {"pedestal","RMS"};//,"Area Gain","Amp Gain"};
     // create vector of value types for snapshot
-    std::vector<::lariov::ValueType_t> snapshot_valuetypes = {lariov::kFLOAT, lariov::kFLOAT, lariov::kFLOAT, lariov::kFLOAT};
+    std::vector<::lariov::ValueType_t> snapshot_valuetypes = {lariov::kFLOAT, lariov::kFLOAT};//, lariov::kFLOAT, lariov::kFLOAT};
 
     std::cout << "Creating Snapshot...";
     Snapshot<std::string> thissnap(_foldername.c_str(),snapshot_fieldnames,snapshot_valuetypes);
@@ -90,14 +90,15 @@ namespace lariov {
       _tData->GetEntry(n);
       if ( (_asicgainD != ASICgain) || (_shapingtD != shT) || (_vin != 0) ) continue;
       ChData<std::string> thisData;
-      thisData.reserve(4);
+      thisData.reserve(2);
       thisData.Channel(_chnumD);
       thisData.push_back(std::to_string(_pedestal));
       thisData.push_back(std::to_string(_rmsnoise));
       ChDataMap[_chnumD] = thisData;
+      thissnap.push_back(ChDataMap[_chnumG]);
       //sPedestal.push_back(thisData);
     }// Loop over all entries
-
+    /*
     // Now loop over Gain TTree entries
     nentries = _tGain->GetEntries();
     for (int n=0; n < nentries; n++){
@@ -117,8 +118,8 @@ namespace lariov {
 		<< "\tarea G: " << ChDataMap[_chnumG][3] << std::endl << std::endl;
       */
       // Finally push back to snapshot collection
-      thissnap.push_back(ChDataMap[_chnumG]);
-    }
+
+    //}
     
     // Now append the Snapshot to the SnapshotCollection
     _snapshotColl.back().Append(thissnap);
