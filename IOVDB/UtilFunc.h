@@ -25,6 +25,7 @@ namespace lariov{
   template<> unsigned short FromString< unsigned short > (const std::string& value );
   template<> unsigned int   FromString< unsigned int   > (const std::string& value );
   template<> unsigned long  FromString< unsigned long  > (const std::string& value );
+  template<> bool           FromString< bool           > (const std::string& value );
 
   template <class T>
   std::string ToString(const T& value);

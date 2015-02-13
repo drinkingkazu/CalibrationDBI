@@ -14,6 +14,7 @@ namespace lariov {
     else if( ft == "real"     || ft == "float"          ) vt = kFLOAT;
     else if( ft == "double precision" || ft == "double" ) vt = kDOUBLE;
     else if( ft == "text"     || ft == "string"         ) vt = kSTRING;
+    else if( ft == "boolean" ) vt = kBOOL;
     else {
       std::string msg("Unknown data type: ");
       msg += "\"" + ft + "\"";
@@ -26,6 +27,8 @@ namespace lariov {
   {
     std::string name("");
     switch(vt) {
+    case kBOOL:
+      name = "boolean"; break;
     case kSHORT:
       name = "smallint"; break;
     case kINT:
@@ -89,6 +92,9 @@ namespace lariov {
 
   template<> long FromString( const std::string& value )
   { return std::stol(value); }
+
+  template<> bool FromString(const std::string& value )
+  { return (value == "t"); }
 
   template <class T> std::string ToString(const T& value)
   { return std::to_string(value); }

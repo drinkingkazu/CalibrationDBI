@@ -4,6 +4,7 @@
 namespace lariov {
   
   enum ValueType_t {
+    kBOOL,
     kSTRING,
     kSHORT,
     kINT,
