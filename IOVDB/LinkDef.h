@@ -13,8 +13,12 @@
 #pragma link C++ enum  lariov::ValueType_t+;
 #pragma link C++ class lariov::IOVDBError+;
 #pragma link C++ class lariov::ColumnDef+;
+#pragma link C++ class std::vector<lariov::ColumnDef>+;
 #pragma link C++ class lariov::TableDef+;
 #pragma link C++ class lariov::ChDataBase+;
+#pragma link C++ function lariov::Str2ValueType(const std::string&)+;
+#pragma link C++ function lariov::ValueType2Str(const lariov::ValueType_t&)+;
+
 //#pragma link C++ class lariov::GetCalibTPCResults+;
 //ADD_NEW_CLASS ... do not change this line
 #endif

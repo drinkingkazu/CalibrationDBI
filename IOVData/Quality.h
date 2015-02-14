@@ -30,11 +30,11 @@ namespace lariov{
     /// Default destructor
     ~Quality(){}
 
-    virtual void Interpret(const std::vector<std::string>& field_value_v);
+    void Interpret(const std::vector<std::string>& field_value_v);
 
-    virtual const lariov::TableDef TableDef() const;
+    const lariov::TableDef TableDef() const;
 
-    virtual const std::vector<std::string> ColumnValues() const;
+    const std::vector<std::string> ColumnValues() const;
 
     void Set(bool quality);
 

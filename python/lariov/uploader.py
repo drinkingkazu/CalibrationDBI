@@ -11,26 +11,31 @@ class parsed_data:
     def __init__(self):
         self._time = None
         self._folder = ''
-        self._field_name =[]
-        self._field_type =[]
+        self._table_def  = None
+        self._table_name = ''
+        self._field_name = []
         self._table = {}
 
     def __repr__(self):
         msg = ''
         msg += '    Folder: ' + self._folder + '\n'
         msg += '    Time  : ' + str(self._time) + '\n'
-        msg += '    Field Names: ' 
-        for x in self._field_name: msg += str(x) + ' '
-        msg += '\n'
-        msg += '    Field Types: '
-        for x in self._field_type: msg += str(x) + ' '
-        msg += '\n'
-        msg += '  %d channel entries...' % len(self._table)
-        msg += '\n'
+        msg += '    Table : ' + str(self._table_name) + '\n'
+        if self._table_def:
+            column_defs = self._table_def.ColumnDefs()
+            for x in xrange(column_defs.size()):
+                msg += '    %s : %s\n' % (column_defs[x].Name(),column_defs[x].Type())
+        if self._table:
+            msg += '  %d channel entries...' % len(self._table)
+            msg += '\n'
         return msg
 
     def valid(self):
-        return self._folder and self._time and len(self._field_name) == len(self._field_type) and len(self._field_name)
+        good = ( self._folder and self._time and 
+                 self._table_name and 
+                 self._table_def and 
+                 self._table_def.ColumnDefs().size() == len(self._field_name) )
+        return good
 
 class ParserError(BaseException):
 
@@ -64,17 +69,37 @@ class IOVDataUploader(object):
         except Exception:
             self._logger.error("Invalid time string expression: %s" % tstr)
             raise ParserError()
+
+    def _parse_table_def(self,data,arg):
+        try:
+            exist = False
+            exec('data._table_def = %s().TableDef()' % arg[0].replace('::','.'))
+            data._table_name = arg[0]
+        except NameError:
+            self._logger.error("Could not identify a class %s" % arg[0])
+            raise ParserError()
+
     def _parse_field_name(self,data,arg):
-        data._field_name = tuple(arg)
-    def _parse_field_type(self,data,arg):
-        data._field_type = tuple(arg)
+        lower_arg = [x.lower() for x in arg]
+        data._field_name = tuple(lower_arg)
 
-    def add(self,fname,folder=""):
+    def add(self,fname,classname="",folder=""):
 
-        if fname.endswith('.root'): return _read_rootfile(fname,folder)
-        else: return self._read_txtfile(fname)
+        if fname.endswith('.root'): 
+            if not classname or not folder:
+                self._logger.error("For a ROOT file, both classname and folder name must be specified!\n")
+                return False
+            exist=False
+            try:
+                exec('exist=lariov.SnapshotCollection(\"%s\")' % classname)
+            except NameError:
+                self._logger.error("Class lariov::SnapshotCollection<%s> not valid (typo? not in dictionary?)\n" % classname)
+                return False
+            return _read_rootfile(fname,classname,folder)
+        else: 
+            return self._read_txtfile(fname)
 
-    def _read_rootfile(self,fname,folder):
+    def _read_rootfile(self,fname,classname,folder):
         
         if not os.path.isfile(fname):
             self._logger.error("File does not exist %s" % fname)
@@ -85,7 +110,7 @@ class IOVDataUploader(object):
             self._logger.error("Failed to open a TFile %s" % fname)
             return False
 
-        ss_col = lariov.SnapshotCollection("string")(folder)
+        ss_col = lariov.SnapshotCollection(classname)(folder)
 
         ss_col.Read(fin)
 
@@ -110,7 +135,7 @@ class IOVDataUploader(object):
         commands = {'folder' : self._parse_folder,
                     'time'   : self._parse_time,
                     'field'  : self._parse_field_name,
-                    'type'   : self._parse_field_type,
+                    'table'  : self._parse_table_def,
                     'data_begin' : None }
         command_keys=commands.keys()
 
@@ -138,7 +163,7 @@ class IOVDataUploader(object):
 
             elif key == 'data_end':
                 data_region=False
-            elif not (len(words)-1) == len(data._field_name):
+            elif not (len(words)-1) == data._table_def.ColumnDefs().size():
                 self._logger.error('Invalid data row (line %d)!' % line_num)
                 raise ParserError()
             else:
@@ -161,27 +186,35 @@ class IOVDataUploader(object):
             print data
             return False
 
+        # Check column names
         if not self._data:
-            self._data = lariov.SnapshotCollection("string")(data._folder)
+            self._data = lariov.SnapshotCollection(data._table_name)(data._folder)
 
-        field_name = std.vector("string")(len(data._field_name),"")
-        field_type = std.vector("string")(len(data._field_type),"")
-        for x in xrange(len(data._field_name)):
-            field_name[x] = data._field_name[x]
-        for x in xrange(len(data._field_type)):
-            field_type[x] = data._field_type[x]
-        ss_data = lariov.Snapshot("string")(data._folder,
-                                            field_name,
-                                            field_type)
+        ss_data = lariov.Snapshot(data._table_name)(data._folder)
+        index_map = []
+        columns_def = data._table_def.ColumnDefs()
+        columns_in  = data._field_name
+
+        for x in xrange(len(columns_in)):
+            for y in xrange(len(columns_in)):
+                if columns_in[x] == columns_def[y].Name():
+                    index_map.append(y)
+                    break
+        if not len(index_map) == len(columns_in):
+            self._logger.error('Unmatched field name found!')
+            print columns_in
+            raise ParserError()
         ss_data.Reset(data._time)
+        ch_data = None
+        exec('ch_data = %s()' % data._table_name.replace('::','.'))
+        str_data = std.vector('string')(len(index_map))
         for ch in data._table.keys():
             row = data._table[ch]
-            ch_data = lariov.ChData("string")()
+            for x in xrange(len(row)):
+                str_data[x] = row[x]
+            ch_data.Interpret(str_data)
             ch_data.Channel(ch)
-            ch_data.reserve(len(row))
-            for v in row:
-                ch_data.push_back(v)
-            ss_data.push_back(ch_data)
+            ss_data.Append(ch_data)
         self._data.Append(ss_data)
         
         return True
@@ -214,11 +247,9 @@ class IOVDataUploader(object):
                 db.disconnect()
                 return False
             defs = []
-            field_name = self._data.SnapshotArray()[0].FieldName()
-            field_type = self._data.SnapshotArray()[0].FieldTypeString()
-            for x in xrange(field_name.size()):
-                defs.append((field_name[x],field_type[x]))
-            print defs
+            table_def = self._data.SnapshotArray()[0].Row(0).TableDef().ColumnDefs()
+            for x in xrange(table_def.size()):
+                defs.append((table_def[x].Name(),lariov.ValueType2Str(table_def[x].Type())))
             folder = db.createFolder(self._data.Folder(),
                                      defs,
                                      grants={'kterao'     : 'rw',
@@ -238,11 +269,12 @@ class IOVDataUploader(object):
                 table = {}
                 ss = self._data.SnapshotArray()[x]
                 ts = ss.Start()
-                for y in xrange(ss.size()):
+                for y in xrange(ss.NChannels()):
                     ch_data = ss.Row(y)
                     values = []
-                    for z in xrange(ch_data.size()):
-                        values.append(str(ch_data[z]))
+                    str_data = ch_data.ColumnValues()
+                    for z in xrange(str_data.size()):
+                        values.append(str_data[z])
                     table[ch_data.Channel()] = tuple(values)
                 py_ts = datetime.strptime("%s %06d" % (ss.Start().AsString("s"),
                                                        int(ss.Start().GetNanoSec()/1.e3)),

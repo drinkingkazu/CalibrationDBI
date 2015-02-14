@@ -30,7 +30,7 @@ namespace lariov {
   }
 
   void Quality::Set(bool quality)
-  { quality = quality; }
+  { _quality = quality; }
   
 }
 #endif

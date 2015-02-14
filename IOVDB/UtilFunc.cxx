@@ -50,22 +50,6 @@ namespace lariov {
     return name;
   }
 
-  std::vector< ::lariov::ValueType_t> Str2ValueType(const std::vector<std::string>& field_type)
-  {
-    std::vector< ::lariov::ValueType_t> res(field_type.size(),kUNKNOWN);
-    for(size_t i=0; i<field_type.size(); ++i)
-      res[i] = Str2ValueType(field_type[i]);
-    return res;
-  }
-  
-  std::vector<std::string> ValueType2Str(const std::vector< ::lariov::ValueType_t>& field_type)
-  {
-    std::vector<std::string> res(field_type.size(),"");
-    for(size_t i=0; i<field_type.size(); ++i)
-      res[i] = ValueType2Str(field_type[i]);
-    return res;
-  }
-
   template<> std::string FromString( const std::string& value)
   { return value; }
 
@@ -95,9 +79,6 @@ namespace lariov {
 
   template<> bool FromString(const std::string& value )
   { return (value == "t"); }
-
-  template <class T> std::string ToString(const T& value)
-  { return std::to_string(value); }
 
   template<> std::string ToString<std::string>(const std::string& value)
   { return std::string(value); }

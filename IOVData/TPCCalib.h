@@ -30,11 +30,11 @@ namespace lariov{
     /// Default destructor
     ~TPCCalib(){}
 
-    virtual void Interpret(const std::vector<std::string>& field_value_v);
+    void Interpret(const std::vector<std::string>& field_value_v);
+    
+    const lariov::TableDef TableDef() const;
 
-    virtual const lariov::TableDef TableDef() const;
-
-    virtual const std::vector<std::string> ColumnValues() const;
+    const std::vector<std::string> ColumnValues() const;
 
     void Set(float pedestal, float rmsnoise, float areagain, float ampgain);
 

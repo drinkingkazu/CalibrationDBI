@@ -6,10 +6,6 @@
 #include "IOVDBTypes.h"
 namespace lariov{
 
-  std::vector<lariov::ValueType_t> Str2ValueType(const std::vector<std::string>& field_type);
-  
-  std::vector<std::string> ValueType2Str(const std::vector<lariov::ValueType_t>& field_type);
-
   lariov::ValueType_t Str2ValueType(const std::string& field_type);
   
   std::string ValueType2Str(const lariov::ValueType_t& field_type);
@@ -28,7 +24,8 @@ namespace lariov{
   template<> bool           FromString< bool           > (const std::string& value );
 
   template <class T>
-  std::string ToString(const T& value);
+  std::string ToString(const T& value)
+  { return std::to_string(value); }
 
   template<> std::string ToString<std::string>(const std::string& value);
 
