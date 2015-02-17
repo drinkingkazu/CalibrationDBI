@@ -11,6 +11,6 @@ if os.path.isfile(sys.argv[-1]):
     for x in xrange(len(sys.argv)-1):
         k.add(sys.argv[x+1])
 else:
-    for x in xrange(len(sys.argv)-2):
-        k.add(sys.argv[x+1],sys.argv[-1])
+    for x in xrange(len(sys.argv)-3):
+        k.add(sys.argv[x+1],sys.argv[-2],sys.argv[-1])
 k.upload()

@@ -38,6 +38,10 @@ namespace lariov{
 
     void Set(double x, double y, double z);
 
+    double X() { return _x; }
+    double Y() { return _y; }
+    double Z() { return _z; }
+
   private:
 
     double _x, _y, _z;

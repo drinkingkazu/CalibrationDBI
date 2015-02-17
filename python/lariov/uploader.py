@@ -95,7 +95,7 @@ class IOVDataUploader(object):
             except NameError:
                 self._logger.error("Class lariov::SnapshotCollection<%s> not valid (typo? not in dictionary?)\n" % classname)
                 return False
-            return _read_rootfile(fname,classname,folder)
+            return self._read_rootfile(fname,classname,folder)
         else: 
             return self._read_txtfile(fname)
 

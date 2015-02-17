@@ -2,10 +2,10 @@
 # Simple text file for uploading calibration constants
 #
 
-FOLDER kazu_pedestal        # Folder name
+FOLDER kterao_pedestal      # Folder name
 TIME   2015-02-06 00:20:00  # Time stamp for validity range start
-FIELD  mean  rms            # Field names
-TYPE   float float          # Field types
+TABLE  lariov::Pedestal     # Table definition
+FIELD  mean rms             # Field names to be filled
 DATA_BEGIN                  # Specification of data block begin
 0 2 0                       # Channel + field values
 1 2 0                       # Channel + field values

@@ -12,12 +12,12 @@ data = lariov.ChDataToy()
 
 start = TTimeStamp()
 
-for x in xrange(10):
+for x in xrange(45):
 
     ss.clear()
-    start.SetSec(x*100)
+    start.SetSec(x*600)
     ss.Reset(start)
-    for y in xrange(100):
+    for y in xrange(8300):
         data.Channel(y)
         data.Set(float(y),float(y),float(y));
         ss.Append(data)
